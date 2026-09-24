@@ -14,6 +14,14 @@ Cursor Cloud secrets this workspace needs (set on the team or this environment):
 
 If `.platform/` is missing or install failed, check them with `for v in YESHUMAN_PLATFORM_TOKEN OPENAI_API_KEY YESHUMAN_PLATFORM_REF; do [ -n "${!v:-}" ] && echo "$v set" || echo "$v MISSING"; done` (never print values). If a required one is missing, stop and ask the user to add it in the Cursor dashboard, then start a new agent — secrets load when the VM boots. Do not work around a missing secret.
 
+## When something breaks
+
+If install, run or verify fails, or these instructions don't match what you find:
+
+1. Do not edit `.cursor/*` (install script, environment, Dockerfile) or copy platform logic into this pack to get past it. These files are managed by Yes Human.
+2. Open an issue on **this repo** labelled `agent-feedback`: the command you ran, the error (last lines of output), and which instruction was wrong or missing. Never paste secret values.
+3. Stop and tell the user, with the issue link.
+
 ## Run it
 
 - Install (Cursor Cloud does this on boot): `bash .cursor/install.sh`
