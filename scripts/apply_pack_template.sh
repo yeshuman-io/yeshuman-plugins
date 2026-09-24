@@ -19,6 +19,9 @@ cp "${TPL}/.cursor/install.sh" "${TPL}/.cursor/Dockerfile" "${PACK}/.cursor/"
 chmod +x "${PACK}/.cursor/install.sh"
 sed -e "s/__HANDLE__/${HANDLE}/g" -e "s/__API_PORT__/${API_PORT}/g" -e "s/__LABS_PORT__/${LABS_PORT}/g" \
   "${TPL}/.cursor/environment.json.tmpl" > "${PACK}/.cursor/environment.json"
+if [[ -d "${PACK}/jobs" ]]; then
+  sed -i "s/\(\"API\", \"port\": ${API_PORT} }\)/\1,\n    { \"name\": \"Jobs\", \"port\": 3008 }/" "${PACK}/.cursor/environment.json"
+fi
 while IFS= read -r line; do
   grep -qxF "${line}" "${PACK}/.gitignore" 2>/dev/null || echo "${line}" >> "${PACK}/.gitignore"
 done < "${TPL}/.gitignore"
