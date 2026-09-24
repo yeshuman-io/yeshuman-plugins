@@ -12,6 +12,8 @@ Cursor Cloud secrets this workspace needs (set on the team or this environment):
 - `OPENAI_API_KEY` — agent chat (required for `verify --check-openai`)
 - `YESHUMAN_PLATFORM_REF` — platform branch or tag (optional, default `master`)
 
+The Cursor "Set up environment" agent runs on Cursor's default image, not `.cursor/Dockerfile`, so Postgres 18 + pgvector and `uv` are missing there. Install them on the VM only to validate (the recipe is `.platform/.cursor/Dockerfile`), and keep the committed `.cursor/environment.json`; do not edit or replace it. Agents started normally on this repo build from the Dockerfile and already have the toolchain.
+
 If `.platform/` is missing or install failed, check them with `for v in YESHUMAN_PLATFORM_TOKEN OPENAI_API_KEY YESHUMAN_PLATFORM_REF; do [ -n "${!v:-}" ] && echo "$v set" || echo "$v MISSING"; done` (never print values). If a required one is missing, stop and ask the user to add it in the Cursor dashboard, then start a new agent — secrets load when the VM boots. Do not work around a missing secret.
 
 ## When something breaks
