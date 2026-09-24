@@ -5,7 +5,7 @@
     "dockerfile": "Dockerfile"
   },
   "install": "bash .cursor/install.sh",
-  "start": "bash .platform/.cursor/start-postgres.sh",
+  "start": "sudo pg_ctlcluster 18 main start || true",
   "ports": [
     { "name": "Labs", "port": __LABS_PORT__ },
     { "name": "API", "port": __API_PORT__ }
