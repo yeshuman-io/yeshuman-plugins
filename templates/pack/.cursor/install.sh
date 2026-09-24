@@ -11,4 +11,10 @@ git clone --depth 1 --branch "${REF}" \
   "https://x-access-token:${YESHUMAN_PLATFORM_TOKEN}@github.com/yeshuman-io/yeshuman.git" "${PACK_ROOT}/.platform"
 git -C "${PACK_ROOT}/.platform" remote set-url origin https://github.com/yeshuman-io/yeshuman.git
 
+if [[ ! -f "${PACK_ROOT}/.platform/scripts/pack_workspace/install.sh" ]]; then
+  echo "Platform ref '${REF}' has no pack workspace (scripts/pack_workspace/install.sh)." >&2
+  echo "Set YESHUMAN_PLATFORM_REF, or wait for the platform release. Do not edit this script; file an agent-feedback issue (see AGENTS.md)." >&2
+  exit 1
+fi
+
 PACK_ROOT="${PACK_ROOT}" exec bash "${PACK_ROOT}/.platform/scripts/pack_workspace/install.sh"
