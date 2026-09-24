@@ -19,13 +19,25 @@ Cursor Dashboard → **Plugins & MCPs** → **Add Marketplace** → **Import fro
 
 ## Pack template
 
-`templates/pack/` holds the few files a pack needs to be a runnable Cursor Cloud workspace: `AGENTS.md`, `.cursor/install.sh` (clones the platform into `.platform/` with the `YESHUMAN_PLATFORM_TOKEN` secret), `.cursor/environment.json`, `.cursor/Dockerfile`, and `.gitignore`.
+`templates/pack/` holds the few files a pack needs to be a runnable Cursor Cloud workspace: `AGENTS.md`, `.cursor/install.sh` (clones the platform into `.platform/` with the `YESHUMAN_PLATFORM_TOKEN` secret), `.cursor/environment.json`, `.cursor/Dockerfile` (one `FROM` line, see below), and `.gitignore`.
 
 ```bash
 scripts/apply_pack_template.sh <pack_dir>   # fills handle and ports from yeshuman.yaml
 ```
 
 Cloud secrets for the pack's Cursor team: `YESHUMAN_PLATFORM_TOKEN` (read access to the platform repo), `OPENAI_API_KEY`, optional `YESHUMAN_PLATFORM_REF` (default `master`) and `YESHUMAN_SEED_DEPLOYMENT_USERS`.
+
+## Cloud base image
+
+`images/cloud-base/Dockerfile` is the Cloud VM toolchain (Ubuntu 24.04, Postgres 18 + pgvector, Node 22 + pnpm 9, uv + Python 3.13). No platform or pack code. `.github/workflows/cloud-base.yml` publishes it to `ghcr.io/yeshuman-io/cloud-base` on merges to `main` that touch it, or by hand (**Actions** → **cloud-base image** → **Run workflow**).
+
+| Tag | Meaning |
+|-----|---------|
+| `:1` | Current toolchain; moves on non-breaking updates. Packs use this. |
+| `:1.YYYYMMDD` | Immutable build, for rollback. |
+| `:2` | Next breaking change (for example a new Postgres major); bump `MAJOR` in the workflow and move packs deliberately. |
+
+Cursor picks up a moved tag on the next environment build.
 
 ## Contributing
 
