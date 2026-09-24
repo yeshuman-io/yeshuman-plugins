@@ -2,6 +2,18 @@
 
 This repo is a **tenant pack** for the Yes Human platform: this tenant's config, theme, seeds and plugins. The platform (Django API + Labs UI) is a separate repo, checked out **read-only** at `.platform/` by `.cursor/install.sh`.
 
+## Before you start
+
+This repo's default branch is the working base; do not look for another base branch.
+
+Cursor Cloud secrets this workspace needs (set on the team or this environment):
+
+- `YESHUMAN_PLATFORM_TOKEN` — read access to the platform repo (required)
+- `OPENAI_API_KEY` — agent chat (required for `verify --check-openai`)
+- `YESHUMAN_PLATFORM_REF` — platform branch or tag (optional, default `master`)
+
+If `.platform/` is missing or install failed, check them with `for v in YESHUMAN_PLATFORM_TOKEN OPENAI_API_KEY YESHUMAN_PLATFORM_REF; do [ -n "${!v:-}" ] && echo "$v set" || echo "$v MISSING"; done` (never print values). If a required one is missing, stop and ask the user to add it in the Cursor dashboard, then start a new agent — secrets load when the VM boots. Do not work around a missing secret.
+
 ## Run it
 
 - Install (Cursor Cloud does this on boot): `bash .cursor/install.sh`
