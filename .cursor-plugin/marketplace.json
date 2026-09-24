@@ -1,0 +1,13 @@
+{
+  "name": "yeshuman",
+  "owner": {
+    "name": "Yes Human"
+  },
+  "plugins": [
+    {
+      "name": "yeshuman-pack",
+      "source": "./plugins/yeshuman-pack",
+      "description": "Guidance for agents working in a Yes Human tenant pack: run the platform, build pack features, raise platform requests."
+    }
+  ]
+}

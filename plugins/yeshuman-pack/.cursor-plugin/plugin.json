@@ -1,0 +1,15 @@
+{
+  "name": "yeshuman-pack",
+  "displayName": "Yes Human Pack",
+  "version": "0.1.0",
+  "description": "Work in a Yes Human tenant pack: understand the pack/platform split, run the stack, build features through extension points, and raise platform requests.",
+  "author": {
+    "name": "Yes Human"
+  },
+  "homepage": "https://github.com/yeshuman-io/yeshuman-plugins",
+  "repository": "https://github.com/yeshuman-io/yeshuman-plugins",
+  "license": "MIT",
+  "keywords": ["yeshuman", "tenant-pack", "platform"],
+  "skills": "./skills/",
+  "rules": "./rules/"
+}

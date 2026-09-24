@@ -1,0 +1,12 @@
+---
+description: The Yes Human platform checkout in .platform/ is read-only for pack work
+alwaysApply: true
+---
+
+# .platform/ is read-only
+
+In a Yes Human pack, `.platform/` is a fresh clone of the platform made by `.cursor/install.sh`. It is not part of this repo and is replaced on every install.
+
+- Do not commit, push, or open PRs from `.platform/`.
+- Change this pack (config, theme, seeds, `plugin/`) when the platform's extension points allow it.
+- When a request needs a platform change, you may prototype in `.platform/` to prove it, then file a `platform-request` issue on this pack with the diff. See the `yh-platform-request` skill.

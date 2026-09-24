@@ -1,0 +1,13 @@
+{
+  "name": "Yes Human pack (__HANDLE__)",
+  "user": "ubuntu",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "install": "bash .cursor/install.sh",
+  "start": "bash .platform/.cursor/start-postgres.sh",
+  "ports": [
+    { "name": "Labs", "port": __LABS_PORT__ },
+    { "name": "API", "port": __API_PORT__ }
+  ]
+}
