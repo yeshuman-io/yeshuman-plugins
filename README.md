@@ -9,9 +9,9 @@ For agents working in a Yes Human **tenant pack** (a repo with `yeshuman.yaml` a
 | Piece | What it does |
 |-------|--------------|
 | Rule `platform-readonly` | `.platform/` is a read-only platform checkout; never commit from it. |
-| Skill `yh-pack-orientation` | The pack/platform split, install and run, and the pack-or-platform decision. |
-| Skill `yh-pack-feature` | Building through config and the Django / Labs plugin contracts, then verifying. |
-| Skill `yh-platform-request` | Raising a platform change as a `platform-request` issue with a prototype diff. |
+| Skill `yeshuman-pack-orientation` | The pack/platform split, install and run, and the pack-or-platform decision. |
+| Skill `yeshuman-pack-feature` | Building through config and the Django / Labs plugin contracts, then verifying. |
+| Skill `yeshuman-platform-request` | Raising a platform change as a `platform-request` issue with a prototype diff. |
 
 ### Install
 
