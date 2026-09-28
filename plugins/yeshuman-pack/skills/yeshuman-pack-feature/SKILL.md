@@ -13,7 +13,10 @@ config/api.json      # API slice: features, tool catalog, integrations
 config/ui.json       # Labs slice: theme, copy, nav, landing
 plugin/django/       # PLUGIN = PluginConfig(...) in __init__.py; tenant-owned apps in plugin/django/<app>/
 plugin/labs/         # register(app) in index.ts; tenant-owned pages in plugin/labs/<app>/
+seeds/               # pack-owned demo users and seed files; yeshuman.yaml seeds: is the command list
 ```
+
+Import platform symbols from `yeshuman.sdk` (Django) and `@yeshuman/sdk` (Labs) only. Never import `yeshuman.apps.*`, `apps.*`, or `@/` from a pack. Always write `yeshuman`, never `yh`.
 
 ## Prefer config over code
 

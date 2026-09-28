@@ -35,8 +35,9 @@ If install, run or verify fails, or these instructions don't match what you find
 
 - `yeshuman.yaml` — handle, ports, modules, seeds, flags.
 - `config/api.json`, `config/ui.json` — tenant config (features, copy, theme, nav).
-- `plugin/django/` — tenant-owned Django apps (`PLUGIN` in `__init__.py`).
-- `plugin/labs/` — tenant-owned Labs routes, nav and components (`index.ts`).
+- `plugin/django/` — tenant-owned Django apps (`PLUGIN` in `__init__.py`). Import platform symbols from `yeshuman.sdk` only.
+- `plugin/labs/` — tenant-owned Labs routes, nav and components (`index.ts`). Import platform symbols from `@yeshuman/sdk` only.
+- `seeds/` — demo users and other pack-owned seed files. Manifest `seeds:` is the command list.
 
 ## Pack or platform?
 

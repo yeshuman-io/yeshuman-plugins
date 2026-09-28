@@ -28,7 +28,7 @@ If install fails on the clone step, the Cloud secret `YESHUMAN_PLATFORM_TOKEN` i
 
 Ask: can this be done with what the platform already exposes?
 
-- **Pack change** — copy, theme, nav, feature flags, landing (`config/ui.json`); tool catalog, features, integrations settings (`config/api.json`); modules, seeds, compositions (`yeshuman.yaml`); tenant-owned Django apps and Labs pages through the plugin slots (`plugin/`). Build it here, run it, open a PR on this repo. Use `yeshuman-pack-feature`.
+- **Pack change** — copy, theme, nav, feature flags, landing (`config/ui.json`); tool catalog, features, integrations settings (`config/api.json`); seeds, compositions (`yeshuman.yaml`); tenant-owned Django apps and Labs pages through the plugin slots (`plugin/`). Pack code imports `yeshuman.sdk` / `@yeshuman/sdk` only. Build it here, run it, open a PR on this repo. Use `yeshuman-pack-feature`.
 - **Platform change** — needs a new extension point, a new config key the platform does not read, a change to shared behaviour, a shared model or API, or a bug in platform code. Do not edit `.platform/` for real. Use `yeshuman-platform-request`.
 - **Both** — build the pack part now; raise a platform request for the missing piece and say in the pack PR what it waits on.
 
