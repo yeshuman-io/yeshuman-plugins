@@ -7,4 +7,4 @@ dockerfilePath = "deploy/ui.Dockerfile"
 healthcheckPath = "/health.json"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
-startCommand = "npm run preview -- --host 0.0.0.0 --port $PORT"
+# Start command is the Dockerfile CMD (a shell, so $PORT expands).
