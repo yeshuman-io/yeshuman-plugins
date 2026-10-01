@@ -25,6 +25,8 @@ Cursor Dashboard → **Plugins & MCPs** → **Add Marketplace** → **Import fro
 scripts/apply_pack_template.sh <pack_dir>   # fills handle and ports from yeshuman.yaml
 ```
 
+`deploy/` is the Railway build for a pack-connected environment. The `<handle>-api` and `<handle>-ui` services connect to the pack repo and use config file `deploy/api.railway.toml` or `deploy/ui.railway.toml`. Each build clones the platform at `YESHUMAN_PLATFORM_REF` (build variable, default `master`) with `YESHUMAN_PLATFORM_SSH_KEY` (read-only deploy key) or `YESHUMAN_PLATFORM_TOKEN`, then builds the platform `api/` or `labs/` with the pack at `/app/tenant-pack`. A pack push redeploys that tenant. A platform push deploys nothing until the next pack build.
+
 Cloud secrets for the pack's Cursor team: `YESHUMAN_PLATFORM_TOKEN` (read access to the platform repo), `OPENAI_API_KEY`, optional `YESHUMAN_PLATFORM_REF` (default `master`) and `YESHUMAN_SEED_DEPLOYMENT_USERS`.
 
 ## Cloud base image

@@ -17,6 +17,9 @@ mkdir -p "${PACK}/.cursor"
 cp "${TPL}/AGENTS.md" "${PACK}/AGENTS.md"
 cp "${TPL}/.cursor/install.sh" "${TPL}/.cursor/Dockerfile" "${PACK}/.cursor/"
 chmod +x "${PACK}/.cursor/install.sh"
+mkdir -p "${PACK}/deploy"
+cp "${TPL}/deploy/"* "${PACK}/deploy/"
+cp "${TPL}/.dockerignore" "${PACK}/.dockerignore"
 sed -e "s/__HANDLE__/${HANDLE}/g" -e "s/__API_PORT__/${API_PORT}/g" -e "s/__LABS_PORT__/${LABS_PORT}/g" \
   "${TPL}/.cursor/environment.json.tmpl" > "${PACK}/.cursor/environment.json"
 if [[ -d "${PACK}/jobs" ]]; then
