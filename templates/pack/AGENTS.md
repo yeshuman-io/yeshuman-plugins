@@ -43,3 +43,5 @@ If install, run or verify fails, or these instructions don't match what you find
 If the request can be met with config, theme, seeds or a pack plugin using the extension points the platform already offers, change **this repo** and open a PR here. If it needs a new extension point or a change to shared behaviour, it is a **platform** change: do not edit `.platform/`. Prototype it there if useful, then open an issue on this repo labelled `platform-request` with the problem, the proposed change and the diff (`git -C .platform diff`). Yes Human triages it.
 
 Install the `yeshuman-pack` Cursor plugin (team marketplace) for the detailed skills.
+
+Until team marketplace Cloud attach works, the same `yeshuman-*` skills and `platform-readonly` rule are also committed under `.cursor/skills/` and `.cursor/rules/` so Cloud Agents load them from this clone. Do not edit those copies; they are Yes Human template files.

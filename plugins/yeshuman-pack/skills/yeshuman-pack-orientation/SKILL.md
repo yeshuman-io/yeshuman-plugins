@@ -1,5 +1,5 @@
 ---
-name: yh-pack-orientation
+name: yeshuman-pack-orientation
 description: Orient in a Yes Human tenant pack — what the pack is, how the read-only platform in .platform/ relates to it, how to install and run the stack, and how to decide whether a request is a pack change or a platform change. Use at the start of any task in a repo that has yeshuman.yaml at its root.
 ---
 
@@ -28,8 +28,8 @@ If install fails on the clone step, the Cloud secret `YESHUMAN_PLATFORM_TOKEN` i
 
 Ask: can this be done with what the platform already exposes?
 
-- **Pack change** — copy, theme, nav, feature flags, landing (`config/ui.json`); tool catalog, features, integrations settings (`config/api.json`); modules, seeds, compositions (`yeshuman.yaml`); tenant-owned Django apps and Labs pages through the plugin slots (`plugin/`). Build it here, run it, open a PR on this repo. Use `yh-pack-feature`.
-- **Platform change** — needs a new extension point, a new config key the platform does not read, a change to shared behaviour, a shared model or API, or a bug in platform code. Do not edit `.platform/` for real. Use `yh-platform-request`.
+- **Pack change** — copy, theme, nav, feature flags, landing (`config/ui.json`); tool catalog, features, integrations settings (`config/api.json`); modules, seeds, compositions (`yeshuman.yaml`); tenant-owned Django apps and Labs pages through the plugin slots (`plugin/`). Build it here, run it, open a PR on this repo. Use `yeshuman-pack-feature`.
+- **Platform change** — needs a new extension point, a new config key the platform does not read, a change to shared behaviour, a shared model or API, or a bug in platform code. Do not edit `.platform/` for real. Use `yeshuman-platform-request`.
 - **Both** — build the pack part now; raise a platform request for the missing piece and say in the pack PR what it waits on.
 
 When unsure, grep `.platform/` for the config key or slot you need. If the platform does not read it, it is a platform change.
