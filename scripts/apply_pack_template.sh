@@ -28,6 +28,9 @@ if [[ -d "${TPL}/.cursor/rules" ]]; then
   mkdir -p "${PACK}/.cursor/rules"
   cp -R "${TPL}/.cursor/rules/." "${PACK}/.cursor/rules/"
 fi
+mkdir -p "${PACK}/deploy"
+cp "${TPL}/deploy/"* "${PACK}/deploy/"
+cp "${TPL}/.dockerignore" "${PACK}/.dockerignore"
 sed -e "s/__HANDLE__/${HANDLE}/g" -e "s/__API_PORT__/${API_PORT}/g" -e "s/__LABS_PORT__/${LABS_PORT}/g" \
   "${TPL}/.cursor/environment.json.tmpl" > "${PACK}/.cursor/environment.json"
 if [[ -d "${PACK}/jobs" ]]; then
