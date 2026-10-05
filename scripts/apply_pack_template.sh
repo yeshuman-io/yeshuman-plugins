@@ -17,6 +17,17 @@ mkdir -p "${PACK}/.cursor"
 cp "${TPL}/AGENTS.md" "${PACK}/AGENTS.md"
 cp "${TPL}/.cursor/install.sh" "${TPL}/.cursor/Dockerfile" "${PACK}/.cursor/"
 chmod +x "${PACK}/.cursor/install.sh"
+# Interim until team marketplace Cloud attach works: Cloud Agents load
+# project skills/rules from the pack clone (.cursor/skills, .cursor/rules).
+# Do not clone the plugin in install.sh / Dockerfile / environment.json.
+if [[ -d "${TPL}/.cursor/skills" ]]; then
+  mkdir -p "${PACK}/.cursor/skills"
+  cp -R "${TPL}/.cursor/skills/." "${PACK}/.cursor/skills/"
+fi
+if [[ -d "${TPL}/.cursor/rules" ]]; then
+  mkdir -p "${PACK}/.cursor/rules"
+  cp -R "${TPL}/.cursor/rules/." "${PACK}/.cursor/rules/"
+fi
 sed -e "s/__HANDLE__/${HANDLE}/g" -e "s/__API_PORT__/${API_PORT}/g" -e "s/__LABS_PORT__/${LABS_PORT}/g" \
   "${TPL}/.cursor/environment.json.tmpl" > "${PACK}/.cursor/environment.json"
 if [[ -d "${PACK}/jobs" ]]; then

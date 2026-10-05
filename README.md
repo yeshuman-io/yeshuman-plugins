@@ -19,7 +19,9 @@ Cursor Dashboard → **Plugins & MCPs** → **Add Marketplace** → **Import fro
 
 ## Pack template
 
-`templates/pack/` holds the few files a pack needs to be a runnable Cursor Cloud workspace: `AGENTS.md`, `.cursor/install.sh` (clones the platform into `.platform/` with the `YESHUMAN_PLATFORM_TOKEN` secret), `.cursor/environment.json`, `.cursor/Dockerfile` (one `FROM` line, see below), and `.gitignore`.
+`templates/pack/` holds the files a pack needs to be a runnable Cursor Cloud workspace: `AGENTS.md`, `.cursor/install.sh` (clones the platform into `.platform/` with the `YESHUMAN_PLATFORM_TOKEN` secret), `.cursor/environment.json`, `.cursor/Dockerfile` (one `FROM` line, see below), and `.gitignore`.
+
+**Interim (until team marketplace Cloud attach works):** the template also copies `yh-*` project skills into `.cursor/skills/` and `platform-readonly` into `.cursor/rules/`. Cloud Agents load those from the pack clone, so a Teams account is not required for this fallback. Canonical skill source remains `plugins/yeshuman-pack/`. Do not bake the plugin into `install.sh`, `Dockerfile`, or `environment.json`. Drop this copy once team marketplace Cloud attach is reliable.
 
 ```bash
 scripts/apply_pack_template.sh <pack_dir>   # fills handle and ports from yeshuman.yaml
