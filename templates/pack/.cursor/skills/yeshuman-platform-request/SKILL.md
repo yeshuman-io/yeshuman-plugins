@@ -1,6 +1,6 @@
 ---
-name: yh-platform-request
-description: Raise a Yes Human platform change from a tenant pack — prototype in the read-only .platform/ checkout if useful, then file a platform-request issue on the pack with the problem, proposed change and diff. Use when yh-pack-orientation decides the work needs a new extension point or a change to shared platform behaviour.
+name: yeshuman-platform-request
+description: Raise a Yes Human platform change from a tenant pack — prototype in the read-only .platform/ checkout if useful, then file a platform-request issue on the pack with the problem, proposed change and diff. Use when yeshuman-pack-orientation decides the work needs a new extension point or a change to shared platform behaviour.
 ---
 
 # Raise a platform request

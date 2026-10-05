@@ -44,4 +44,4 @@ If the request can be met with config, theme, seeds or a pack plugin using the e
 
 Install the `yeshuman-pack` Cursor plugin (team marketplace) for the detailed skills.
 
-Until team marketplace Cloud attach works, the same `yh-*` skills and `platform-readonly` rule are also committed under `.cursor/skills/` and `.cursor/rules/` so Cloud Agents load them from this clone. Do not edit those copies; they are Yes Human template files.
+Until team marketplace Cloud attach works, the same `yeshuman-*` skills and `platform-readonly` rule are also committed under `.cursor/skills/` and `.cursor/rules/` so Cloud Agents load them from this clone. Do not edit those copies; they are Yes Human template files.

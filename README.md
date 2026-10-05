@@ -9,9 +9,9 @@ For agents working in a Yes Human **tenant pack** (a repo with `yeshuman.yaml` a
 | Piece | What it does |
 |-------|--------------|
 | Rule `platform-readonly` | `.platform/` is a read-only platform checkout; never commit from it. |
-| Skill `yh-pack-orientation` | The pack/platform split, install and run, and the pack-or-platform decision. |
-| Skill `yh-pack-feature` | Building through config and the Django / Labs plugin contracts, then verifying. |
-| Skill `yh-platform-request` | Raising a platform change as a `platform-request` issue with a prototype diff. |
+| Skill `yeshuman-pack-orientation` | The pack/platform split, install and run, and the pack-or-platform decision. |
+| Skill `yeshuman-pack-feature` | Building through config and the Django / Labs plugin contracts, then verifying. |
+| Skill `yeshuman-platform-request` | Raising a platform change as a `platform-request` issue with a prototype diff. |
 
 ### Install
 
@@ -21,7 +21,7 @@ Cursor Dashboard → **Plugins & MCPs** → **Add Marketplace** → **Import fro
 
 `templates/pack/` holds the files a pack needs to be a runnable Cursor Cloud workspace: `AGENTS.md`, `.cursor/install.sh` (clones the platform into `.platform/` with the `YESHUMAN_PLATFORM_TOKEN` secret), `.cursor/environment.json`, `.cursor/Dockerfile` (one `FROM` line, see below), and `.gitignore`.
 
-**Interim (until team marketplace Cloud attach works):** the template also copies `yh-*` project skills into `.cursor/skills/` and `platform-readonly` into `.cursor/rules/`. Cloud Agents load those from the pack clone, so a Teams account is not required for this fallback. Canonical skill source remains `plugins/yeshuman-pack/`. Do not bake the plugin into `install.sh`, `Dockerfile`, or `environment.json`. Drop this copy once team marketplace Cloud attach is reliable.
+**Interim (until team marketplace Cloud attach works):** the template also copies `yeshuman-*` project skills into `.cursor/skills/` and `platform-readonly` into `.cursor/rules/`. Cloud Agents load those from the pack clone, so a Teams account is not required for this fallback. Canonical skill source remains `plugins/yeshuman-pack/`. Do not bake the plugin into `install.sh`, `Dockerfile`, or `environment.json`. Drop this copy once team marketplace Cloud attach is reliable.
 
 ```bash
 scripts/apply_pack_template.sh <pack_dir>   # fills handle and ports from yeshuman.yaml

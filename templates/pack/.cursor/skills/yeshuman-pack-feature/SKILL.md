@@ -1,6 +1,6 @@
 ---
-name: yh-pack-feature
-description: Build a feature or change inside a Yes Human tenant pack using the platform's extension points — yeshuman.yaml, config/api.json and config/ui.json, and the Django and Labs plugin contracts — then run and verify it against the read-only platform. Use once yh-pack-orientation has decided the work is a pack change.
+name: yeshuman-pack-feature
+description: Build a feature or change inside a Yes Human tenant pack using the platform's extension points — yeshuman.yaml, config/api.json and config/ui.json, and the Django and Labs plugin contracts — then run and verify it against the read-only platform. Use once yeshuman-pack-orientation has decided the work is a pack change.
 ---
 
 # Build in a Yes Human pack
