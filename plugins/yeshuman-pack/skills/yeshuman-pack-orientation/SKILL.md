@@ -33,3 +33,11 @@ Ask: can this be done with what the platform already exposes?
 - **Both** — build the pack part now; raise a platform request for the missing piece and say in the pack PR what it waits on.
 
 When unsure, grep `.platform/` for the config key or slot you need. If the platform does not read it, it is a platform change.
+
+## Skills in this pack
+
+Cloud loads skills from this clone's `.cursor/skills/` until the `yeshuman-pack` plugin attaches from the team marketplace. Those folders are Yes Human pack plugin skills only.
+
+- Use `yeshuman-pack-orientation`, `yeshuman-pack-feature`, and `yeshuman-platform-request`. Always the fully qualified `yeshuman-*` names; never `yh-*`.
+- Do not add platform skills here (`plan-to-make-a-plan`, `create-domain-slice`, `create-django-app`, or anything else from `.platform/.cursor/skills`). They belong in the platform. Read them from `.platform/` if you need them; do not copy them into this pack.
+- `.cursor/*` is managed. If you are tempted to rewrite install, environment, Dockerfile, rules, or skills, file an `agent-feedback` issue on this pack and stop.
