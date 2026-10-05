@@ -4,13 +4,13 @@ This repo is a **tenant pack** for the Yes Human platform: this tenant's config,
 
 ## Before you start
 
-This repo's default branch is the working base; do not look for another base branch.
+This repo's default branch is the working base; do not look for another base branch. While it is `staging`, that is pre-production: Railway staging and Cursor Cloud build from it, and `master` is production, promoted from `staging` by Yes Human. Open PRs against `staging` and never merge to `master`.
 
 Cursor Cloud secrets this workspace needs (set on the team or this environment):
 
 - `YESHUMAN_PLATFORM_TOKEN` — read access to the platform repo (required)
 - `OPENAI_API_KEY` — agent chat (required for `verify --check-openai`)
-- `YESHUMAN_PLATFORM_REF` — platform branch or tag (optional, default `master`)
+- `YESHUMAN_PLATFORM_REF` — platform branch or tag (default `master`; set it to `staging` while this repo's default branch is `staging`)
 
 The Cursor "Set up environment" agent runs on Cursor's default image, not `.cursor/Dockerfile`, so Postgres 18 + pgvector and `uv` are missing there. Install them on the VM only to validate (the recipe is `.platform/.cursor/Dockerfile`), and keep the committed `.cursor/environment.json`; do not edit or replace it. Agents started normally on this repo build from the Dockerfile and already have the toolchain.
 
@@ -35,8 +35,9 @@ If install, run or verify fails, or these instructions don't match what you find
 
 - `yeshuman.yaml` — handle, ports, modules, seeds, flags.
 - `config/api.json`, `config/ui.json` — tenant config (features, copy, theme, nav).
-- `plugin/django/` — tenant-owned Django apps (`PLUGIN` in `__init__.py`).
-- `plugin/labs/` — tenant-owned Labs routes, nav and components (`index.ts`).
+- `plugin/django/` — tenant-owned Django apps (`PLUGIN` in `__init__.py`). Import platform symbols from `yeshuman.sdk` only.
+- `plugin/labs/` — tenant-owned Labs routes, nav and components (`index.ts`). Import platform symbols from `@yeshuman/sdk` only.
+- `seeds/` — demo users and other pack-owned seed files. Manifest `seeds:` is the command list.
 
 ## Pack or platform?
 

@@ -1,0 +1,10 @@
+# Railway config-as-code for <handle>-ui (service setting: config file deploy/ui.railway.toml).
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "deploy/ui.Dockerfile"
+
+[deploy]
+healthcheckPath = "/health.json"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+# Start command is the Dockerfile CMD (a shell, so $PORT expands).
