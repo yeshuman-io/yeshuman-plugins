@@ -24,6 +24,12 @@ Default login is `cloud@yeshuman.local` / `clouddev` unless `YESHUMAN_SEED_DEPLO
 
 If install fails on the clone step, the Cloud secret `YESHUMAN_PLATFORM_TOKEN` is missing or cannot read the platform repo — report that; do not work around it.
 
+## Browser checks and Railway
+
+- Computer use is not reliably available in Cloud. If it is missing or capped, drive the browser with a script instead: Puppeteer or Playwright from Node (`npx -y puppeteer` / `npx -y playwright` against `http://localhost:<labs_port>`), or Chrome DevTools Protocol. Save screenshots as evidence (`yeshuman-linear-evidence`).
+- Never use Railway MCP, the Railway CLI with account tokens, or `railway variable list`. Read deploys from Railway's comments and commit statuses on the PR, and check the deployed URLs with `uv run --with pyyaml deploy/smoke.py --api <api-url> --labs <ui-url>` (health, `bootstrapped`, Labs, one demo login).
+- `seeds/demo.yaml` users exist on staging and PR environments, never in production. Their passwords are committed, so do not add real stakeholder accounts there for production use.
+
 ## Pack or platform?
 
 Ask: can this be done with what the platform already exposes?
