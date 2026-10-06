@@ -37,7 +37,7 @@ fi
 mkdir -p "${PACK}/.github/ISSUE_TEMPLATE"
 cp "${TPL}/.github/ISSUE_TEMPLATE/"* "${PACK}/.github/ISSUE_TEMPLATE/"
 mkdir -p "${PACK}/deploy"
-cp "${TPL}/deploy/"* "${PACK}/deploy/"
+find "${TPL}/deploy" -maxdepth 1 -type f -exec cp {} "${PACK}/deploy/" \;
 HANDLE_ENV="$(printf '%s' "${HANDLE}" | tr '[:lower:]-' '[:upper:]_')"
 sed -i "s/__HANDLE_ENV__/${HANDLE_ENV}/g" "${PACK}/deploy/ui.Dockerfile"
 cp "${TPL}/.dockerignore" "${PACK}/.dockerignore"

@@ -8,6 +8,8 @@ Railway builds this pack's services from these files. Do not edit them in a pack
 | `<handle>-ui` | `deploy/ui.railway.toml` | `deploy/ui.Dockerfile` |
 | `talentco-jobs` (TalentCo only) | `jobs/railway.toml` | `jobs/Dockerfile` |
 
+For each service in the dashboard (Settings): set **Config file path** to the file above, and leave **Start command** and **Pre-deploy command** empty so the file and the Dockerfile `CMD` apply. The pre-deploy is `sh /app/tenant-pack/deploy/predeploy.sh` (migrate, then `bootstrap_tenant`). It is a script because Railway runs a Dockerfile service's commands in exec form, where `a && b` is not a shell chain.
+
 Railway reads only a root `railway.toml` unless the service's config file path is set. A service without that setting runs whatever pre-deploy its dashboard has, if any. As a fallback, the API container runs `bootstrap_tenant --if-needed` before `daphne`. That bootstraps a database once if it has never been bootstrapped, but re-seeding on each deploy still needs the pre-deploy. `GET /api/health` → `bootstrapped` shows the state.
 
 ## Seeding by environment
