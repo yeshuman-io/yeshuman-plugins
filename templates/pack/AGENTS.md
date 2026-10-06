@@ -4,7 +4,7 @@ This repo is a **tenant pack** for the Yes Human platform: this tenant's config,
 
 ## Before you start
 
-This repo's default branch is the working base; do not look for another base branch. While it is `staging`, that is pre-production: Railway staging and Cursor Cloud build from it, and `master` is production, promoted from `staging` by Yes Human. Open PRs against `staging`. You may merge your own PR to `staging` when it meets the high-confidence bar in `yeshuman-pack-feature` (Merge); otherwise leave it open for Yes Human. Never merge or push to `master`; Yes Human promotes.__ORIGIN_WORKFLOW__
+This repo's default branch is the working base; do not look for another base branch. While it is `staging`, that is pre-production: Railway staging and Cursor Cloud build from it, and `master` is production, promoted from `staging` by Yes Human. Open PRs against `staging`. You may merge your own PR to `staging` when it meets the high-confidence bar in `yeshuman-pack-feature` (Merge); otherwise leave it open for Yes Human. Squash merges only (`gh pr merge --squash` or API `merge_method=squash`), never a merge commit or a rebase. Never merge or push to `master`; Yes Human promotes.__ORIGIN_WORKFLOW__
 
 Cursor Cloud secrets this workspace needs (set on the team or this environment):
 
@@ -26,7 +26,7 @@ If install, run or verify fails, or these instructions don't match what you find
 
 ## Evidence on Linear
 
-If your work is tied to a Linear issue, post evidence on that issue and put the same Given/When/Then "How to verify" block in the PR body. Evidence means a screenshot or short video for UI changes, and a request/response or test output for backend changes. Follow `yeshuman-linear-evidence`. If you cannot capture or post evidence, say so explicitly; never fake it. User-visible changes need posted evidence before you self-merge to `staging`.
+If your work is tied to a Linear issue, post evidence on that issue and put the same Given/When/Then "How to verify" block in the PR body. Evidence means a screenshot or short video for UI changes, and a request/response or test output for backend changes. Follow `yeshuman-linear-evidence`. If you cannot capture or post evidence, say so explicitly; never fake it. User-visible changes need evidence before you self-merge to `staging`. If Linear is unreachable, the full evidence in the PR body counts; say that Linear posting failed and post to the issue once access works.
 
 ## Run it
 
