@@ -5,7 +5,7 @@ description: Post evidence on the Linear issue for any change you build, fix or 
 
 # Evidence on the Linear issue
 
-If your work is tied to a Linear issue, you must post evidence on that issue. A claim without evidence counts as unverified. The PR body carries the same "How to verify" block. For user-visible changes, `yeshuman-pack-feature` (Merge) does not allow a self-merge until the evidence comment is posted.
+If your work is tied to a Linear issue, you must post evidence on that issue. A claim without evidence counts as unverified. The PR body carries the same "How to verify" block. For user-visible changes, `yeshuman-pack-feature` (Merge) requires the evidence before a self-merge. It goes on the Linear issue, or in the PR body when Linear is unreachable (section 6).
 
 ## 1. Pick the evidence
 
@@ -99,5 +99,6 @@ Say so explicitly, in the comment and the PR. Do not fake it.
 
 - Never stage, mock up, edit or reuse a screenshot, log or response to stand in for one you did not capture on this change. Never describe a check you did not run as if you had run it.
 - Under **Not verified**, write what is missing and why, for example: "No screenshot: Labs failed to start (`run.sh` error in the log, excerpt attached)" or "Railway preview API failed to deploy; local verify only."
-- If you cannot post to Linear at all (no MCP, missing key, 401), put the full evidence block in the PR body. Your final report must say "Evidence not posted to <issue>: <reason>" so a human can post it or fix the key.
-- A user-visible change without posted evidence is not eligible for self-merge. Leave the PR open and say what is missing.
+- **Linear unreachable** (no MCP, missing key, 401, or the key cannot see the team): put the full evidence and the "How to verify" block in the PR body instead. That counts for self-merge. Embed screenshots and videos in the PR body. The Cursor PR tool uploads `<img>`/`<video>` tags that point at `/opt/cursor/artifacts/` paths; paste text evidence inline in fenced blocks. Add this line at the top of the PR body: `Linear evidence pending: <ISSUE-ID>: <reason>` (for example "<HANDLE>_LINEAR_API_KEY returns 401"). Say the same in your final report.
+- **Post later.** Once Linear access works, any agent on this pack (or a human) posts the evidence comment from the PR body using this skill. Then they replace the pending line with `Linear evidence: <comment URL>`. At the start of a run, check your own merged PRs for a pending line and clear any you can.
+- A user-visible change with no evidence anywhere (neither on the issue nor in the PR body) is not eligible for self-merge. Leave the PR open and say what is missing.
