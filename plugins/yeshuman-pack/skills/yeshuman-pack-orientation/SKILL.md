@@ -24,6 +24,20 @@ Default login is `cloud@yeshuman.local` / `clouddev` unless `YESHUMAN_SEED_DEPLO
 
 If install fails on the clone step, the Cloud secret `YESHUMAN_PLATFORM_TOKEN` is missing or cannot read the platform repo — report that; do not work around it.
 
+## Platform version (every session start)
+
+After install, before any task:
+
+```bash
+python3 .platform/scripts/pack_workspace/contract_status.py
+```
+
+- `current`: carry on.
+- `behind` or `mismatch`: the pack's `requires_product` floor is older than the platform on `staging`. Do the catch-up **first, as its own PR** (`yeshuman-platform-upgrade`), then the task. Skip it only when `yeshuman.yaml` has `platform_pin:`, an open `Platform catch-up:` PR already exists, or the user says the client is near a release. Say which in your report.
+- `incompatible` or `missing`: stop and file `agent-feedback` with the output. Never raise the `<N+1` cap: majors are rolled out by Yes Human.
+
+If the script is not in `.platform/`, the platform ref predates it: note that and carry on.
+
 ## Pack or platform?
 
 Ask: can this be done with what the platform already exposes?
@@ -38,7 +52,7 @@ When unsure, grep `.platform/` for the config key or slot you need. If the platf
 
 Cloud loads skills from this clone's `.cursor/skills/` until the `yeshuman-pack` plugin attaches from the team marketplace. Those folders hold three tiers: `yeshuman-*` skills (managed, overwritten on refresh), approved adopted skills (currently none), and unprefixed pack-owned skills (never touched by refresh; must not duplicate or override a `yeshuman-*` skill). See `yeshuman-pack-feature` (Skill tiers).
 
-- Use `yeshuman-pack-orientation`, `yeshuman-pack-feature`, `yeshuman-platform-request`, `yeshuman-linear-evidence` (post evidence and a Given/When/Then "How to verify" on the Linear issue and the PR for any issue-linked work), and `yeshuman-plan-to-make-a-plan` (plan a Linear issue with the user before building; `/yeshuman-plan-to-make-a-plan`). Always the fully qualified `yeshuman-*` names; never `yh-*`.
+- Use `yeshuman-pack-orientation`, `yeshuman-pack-feature`, `yeshuman-platform-request`, `yeshuman-platform-upgrade` (catch the pin up to the latest platform minor in its own PR), `yeshuman-linear-evidence` (post evidence and a Given/When/Then "How to verify" on the Linear issue and the PR for any issue-linked work), and `yeshuman-plan-to-make-a-plan` (plan a Linear issue with the user before building; `/yeshuman-plan-to-make-a-plan`). Always the fully qualified `yeshuman-*` names; never `yh-*`.
 - Do not add other platform skills here (`create-domain-slice`, `create-django-app`, or anything else from `.platform/.cursor/skills`) unless Yes Human approved them. They belong in the platform. Read them from `.platform/` if you need them; do not copy them into this pack.
 - `.cursor/*` is managed, except pack-owned skills. If you are tempted to rewrite install, environment, Dockerfile, rules, or `yeshuman-*` skills, file an `agent-feedback` issue on this pack and stop.
 

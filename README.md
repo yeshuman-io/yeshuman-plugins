@@ -12,6 +12,7 @@ For agents working in a Yes Human **tenant pack** (a repo with `yeshuman.yaml` a
 | Skill `yeshuman-pack-orientation` | The pack/platform split, install and run, and the pack-or-platform decision. |
 | Skill `yeshuman-pack-feature` | Building through config and the Django / Labs plugin contracts, then verifying. |
 | Skill `yeshuman-platform-request` | Raising a platform change as a `platform-request` issue (template in the pack's `.github/ISSUE_TEMPLATE/`), or a `## Platform request` PR-body section when issue creation fails; what to do when the platform PR lands. |
+| Skill `yeshuman-platform-upgrade` | Catching the pack's `requires_product` pin up to the latest platform minor in its own PR (`contract_status.py`, reinstall, test, squash-merge to `staging`); staying pinned with `platform_pin:`; majors are never self-upgraded. |
 | Skill `yeshuman-plan-to-make-a-plan` | Planning a Linear issue with the user (discovery, pack vs platform, where it lives) before any build. Slash command `/yeshuman-plan-to-make-a-plan`. |
 | Skill `yeshuman-linear-evidence` | Posting evidence (screenshot, video, API or test output) and a Given/When/Then "How to verify" on the Linear issue and PR; includes `linear_evidence.py` for the no-MCP path. |
 
