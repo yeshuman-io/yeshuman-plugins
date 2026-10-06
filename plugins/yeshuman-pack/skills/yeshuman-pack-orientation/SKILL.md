@@ -41,3 +41,9 @@ Cloud loads skills from this clone's `.cursor/skills/` until the `yeshuman-pack`
 - Use `yeshuman-pack-orientation`, `yeshuman-pack-feature`, `yeshuman-platform-request`, `yeshuman-linear-evidence` (post evidence and a Given/When/Then "How to verify" on the Linear issue and the PR for any issue-linked work), and `yeshuman-plan-to-make-a-plan` (plan a Linear issue with the user before building; `/yeshuman-plan-to-make-a-plan`). Always the fully qualified `yeshuman-*` names; never `yh-*`.
 - Do not add other platform skills here (`create-domain-slice`, `create-django-app`, or anything else from `.platform/.cursor/skills`) unless Yes Human approved them. They belong in the platform. Read them from `.platform/` if you need them; do not copy them into this pack.
 - `.cursor/*` is managed, except pack-owned skills. If you are tempted to rewrite install, environment, Dockerfile, rules, or `yeshuman-*` skills, file an `agent-feedback` issue on this pack and stop.
+
+## Fresh skills (orchestrators and workers)
+
+- A long-running orchestrator may hold stale skills, because skills refresh on `staging` while it runs. Before creating workers, run `git pull origin staging` and `ls .cursor/skills/yeshuman-*` so you know what is current.
+- Name the relevant skills explicitly in every worker kickoff, for example "use `yeshuman-pack-feature` and `yeshuman-linear-evidence`". Do not assume the worker will find them.
+- If a skill does not show as a slash command, read `.cursor/skills/<name>/SKILL.md` directly and follow it.
