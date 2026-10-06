@@ -36,8 +36,8 @@ When unsure, grep `.platform/` for the config key or slot you need. If the platf
 
 ## Skills in this pack
 
-Cloud loads skills from this clone's `.cursor/skills/` until the `yeshuman-pack` plugin attaches from the team marketplace. Those folders hold the Yes Human pack plugin skills plus explicitly approved skills (currently `plan-to-make-a-plan`).
+Cloud loads skills from this clone's `.cursor/skills/` until the `yeshuman-pack` plugin attaches from the team marketplace. Those folders hold three tiers: `yeshuman-*` skills (managed, overwritten on refresh), approved adopted skills (currently `plan-to-make-a-plan`), and unprefixed pack-owned skills (never touched by refresh; must not duplicate or override a `yeshuman-*` skill). See `yeshuman-pack-feature` (Skill tiers).
 
 - Use `yeshuman-pack-orientation`, `yeshuman-pack-feature`, `yeshuman-platform-request`, and `yeshuman-linear-evidence` (post evidence and a Given/When/Then "How to verify" on the Linear issue and the PR for any issue-linked work). Always the fully qualified `yeshuman-*` names; never `yh-*`.
 - Do not add other platform skills here (`create-domain-slice`, `create-django-app`, or anything else from `.platform/.cursor/skills`) unless Yes Human approved them. They belong in the platform. Read them from `.platform/` if you need them; do not copy them into this pack.
-- `.cursor/*` is managed. If you are tempted to rewrite install, environment, Dockerfile, rules, or skills, file an `agent-feedback` issue on this pack and stop.
+- `.cursor/*` is managed, except pack-owned skills. If you are tempted to rewrite install, environment, Dockerfile, rules, or `yeshuman-*` skills, file an `agent-feedback` issue on this pack and stop.

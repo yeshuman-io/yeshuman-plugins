@@ -64,13 +64,25 @@ If the slot you need does not exist, stop: that is a platform request.
 
 Commit only pack files (`.platform/` is git-ignored). Open a PR against `staging` describing the change, how you verified it (commands and results), the Railway preview link, and any platform request it depends on. Include the Given/When/Then "How to verify" block from `yeshuman-linear-evidence`. If the work is tied to a Linear issue, post the evidence comment on the issue too.
 
+## Skill tiers
+
+Pack `.cursor/skills/` has three tiers:
+
+| Tier | Names | Owner | On template refresh |
+|------|-------|-------|--------------------|
+| Yes Human | `yeshuman-*` (never `yh-*`) | Yes Human, from `yeshuman-plugins` | Overwritten |
+| Adopted third-party | Original name, on the approved list (currently `plan-to-make-a-plan`) | Yes Human approves | Kept |
+| Pack-owned | Unprefixed, written for this pack | The pack | Never touched |
+
+A pack-owned skill must not duplicate or override a `yeshuman-*` skill. Extend it by linking to the `yeshuman-*` skill and adding pack-specific detail, and do not restate or contradict its rules. A copy of a platform skill (`.platform/.cursor/skills`) is not pack-owned: it needs approval as an adopted skill.
+
 ## Merge
 
 You may squash-merge your own PR to `staging` only when **all** of these hold. CI is not required; your own runs are the evidence. Never merge or push to `master`: promotion to production is done by Yes Human's fleet coordinator, not by implementer agents.
 
 - Base is `staging`; the branch is cut from current `staging` with no unmerged parent PR (not stacked); the PR is not draft.
 - Small: roughly 15 files and 800 changed lines or fewer, excluding tests.
-- Pack files only (`plugin/`, `config/`, `seeds/`, `yeshuman.yaml`). No `.platform/`, no copied platform code, no managed files (`.cursor/*`, `deploy/*`, `.dockerignore`, `AGENTS.md`). `.cursor/skills/` holds only the `yeshuman-*` skills plus approved ones (currently `plan-to-make-a-plan`).
+- Pack files only (`plugin/`, `config/`, `seeds/`, `yeshuman.yaml`, pack-owned skills in `.cursor/skills/<unprefixed>/`). No `.platform/`, no copied platform code, no managed files (`.cursor/*` other than pack-owned skills, `deploy/*`, `.dockerignore`, `AGENTS.md`), no edits to `yeshuman-*` skills, and no new adopted skill without approval (see Skill tiers).
 - Any platform slot it needs is already on platform `staging`, and `requires_product` / `requiresProduct` matches.
 - On the final head SHA, in your Cloud environment: install, `run.sh`, `yeshuman verify <handle>`, the pack tests for touched apps (new behaviour has a test), and `pnpm type-check` plus a browser check if Labs changed.
 - New migrations are additive, take the next number after `staging`, and no other open PR on this repo uses the same app and number.
