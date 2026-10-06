@@ -1,11 +1,13 @@
 ---
 name: yeshuman-linear-evidence
-description: Post evidence on the Linear issue for any change you build, fix or report on — a screenshot or short video for UI, request/response or test output for backend, before/after queries for data, deploy plus health check for config — with a Given/When/Then "How to verify" block that a human can follow, mirrored in the PR body. Use whenever your work is tied to a Linear issue, before you mark a PR ready or self-merge, and when reporting status back to an issue.
+description: Post evidence on the Linear issue for any change you build, fix or report on — a screenshot or short video for UI, request/response or test output for backend, before/after queries for data, deploy plus health check for config — with a Given/When/Then "How to verify" block that a human can follow, mirrored in the PR body. Use whenever your work is tied to a Linear issue: before you mark a PR ready or self-merge, when you ship or move an issue to Done, and when reporting status back to an issue.
 ---
 
 # Evidence on the Linear issue
 
 If your work is tied to a Linear issue, you must post evidence on that issue. A claim without evidence counts as unverified. The PR body carries the same "How to verify" block. For user-visible changes, `yeshuman-pack-feature` (Merge) requires the evidence before a self-merge. It goes on the Linear issue, or in the PR body when Linear is unreachable (section 6).
+
+**Ship / Done.** Before you move an issue to Done or report it as shipped, the evidence comment must be on the issue, and a human must be able to re-check the work from Linear without opening the PR. A PR link alone is never enough. While Linear is unreachable the issue cannot move to Done anyway, so the "Linear evidence pending" line (section 6) stands until the comment is posted.
 
 ## 1. Pick the evidence
 
@@ -18,6 +20,7 @@ Choose by the kind of change. If a change spans several kinds, include one piece
 | Backend / API | Request and response, or test output | `curl -i` against the endpoint with the status line and a trimmed body, or the `pytest` summary for the touched app (the command plus the final pass/fail lines). |
 | Agent tool / chat behaviour | Transcript excerpt and screenshot | The prompt, the tool call or result, and the reply. Use the API log lines (`.platform/api/logs/<handle>.log`) if the UI does not show the tool call. |
 | Data / migration / seeds | Before/after query | The same query run before and after `migrate` or the seed command: row counts or the affected rows. |
+| Docs, skills or other markdown-only (no UI) | Review script | Which files to open and what to confirm in each. This replaces the screenshot, and may replace Given/When/Then. |
 | Config / infra / deploy | Deploy and health check | The Railway deployment status for each service on the head SHA, plus `curl -fsS <api>/health` (and `/ping`), `<ui>/health.json`, and a working login. |
 
 Never include secrets, tokens, real client personal data, or full env dumps. Redact them and say you redacted them. Use the demo personas or the default Cloud login.
@@ -64,12 +67,12 @@ The key is read from `LINEAR_API_KEY`, then `<HANDLE>_LINEAR_API_KEY` (handle fr
 `{{file:...}}` placeholders are for the helper. On the MCP path, write the `![name](assetUrl)` links yourself.
 
 ```markdown
-## Evidence: <one-line summary of what changed>
+## Evidence: <ISSUE-ID> — <one-line summary of what changed>
 
 **PR:** <PR URL> (head `<short sha>`) · **Preview:** <Railway preview Labs URL> · **Status:** ready for review | merged to staging
 
-### What changed
-- <one to three bullets, matching the diff; claim no more than it does>
+### What shipped
+<one short paragraph of what was implemented, matching the diff; claim no more than it does>
 
 ### Evidence
 {{file:abc-123-card.png}}
@@ -91,7 +94,7 @@ Keep "How to verify" human-runnable. Use the Railway preview or staging URL, not
 
 ## 5. Same block in the PR body
 
-The PR body carries the same **What changed**, **How to verify** (identical Given/When/Then) and **Not verified** sections. Add a link to the Linear issue and the evidence comment. Images can be embedded with the same `assetUrl`s. If the issue has no Linear link (no issue), put the evidence in the PR body only.
+The PR body carries the same **What shipped**, **How to verify** (identical Given/When/Then) and **Not verified** sections. Add a link to the Linear issue and the evidence comment. Images can be embedded with the same `assetUrl`s. If the issue has no Linear link (no issue), put the evidence in the PR body only.
 
 ## 6. When you cannot capture evidence
 
@@ -102,3 +105,10 @@ Say so explicitly, in the comment and the PR. Do not fake it.
 - **Linear unreachable** (no MCP, missing key, 401, or the key cannot see the team): put the full evidence and the "How to verify" block in the PR body instead. That counts for self-merge. Embed screenshots and videos in the PR body. The Cursor PR tool uploads `<img>`/`<video>` tags that point at `/opt/cursor/artifacts/` paths; paste text evidence inline in fenced blocks. Add this line at the top of the PR body: `Linear evidence pending: <ISSUE-ID>: <reason>` (for example "<HANDLE>_LINEAR_API_KEY returns 401"). Say the same in your final report.
 - **Post later.** Once Linear access works, any agent on this pack (or a human) posts the evidence comment from the PR body using this skill. Then they replace the pending line with `Linear evidence: <comment URL>`. At the start of a run, check your own merged PRs for a pending line and clear any you can.
 - A user-visible change with no evidence anywhere (neither on the issue nor in the PR body) is not eligible for self-merge. Leave the PR open and say what is missing.
+
+## Anti-patterns
+
+- Moving an issue to Done, or reporting it shipped, with only a PR link.
+- Evidence that lives only in `/opt/cursor/artifacts` or a Cloud transcript (nobody else can open them).
+- Evidence only in the PR body while Linear is reachable, or with no "Linear evidence pending" line when it is not.
+- Treating green CI as the evidence. CI is not required, and a walk of the change is.
