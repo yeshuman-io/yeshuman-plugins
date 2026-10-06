@@ -1,8 +1,8 @@
 {
   "name": "yeshuman-pack",
   "displayName": "Yes Human Pack",
-  "version": "0.2.0",
-  "description": "Work in a Yes Human tenant pack: understand the pack/platform split, run the stack, build features through extension points, raise platform requests, and post evidence on Linear issues.",
+  "version": "0.3.0",
+  "description": "Work in a Yes Human tenant pack: understand the pack/platform split, run the stack, build features through extension points, raise platform requests, catch up with new platform minors, and post evidence on Linear issues.",
   "author": {
     "name": "Yes Human"
   },

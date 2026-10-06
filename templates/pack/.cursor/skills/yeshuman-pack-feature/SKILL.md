@@ -5,6 +5,10 @@ description: Build a feature or change inside a Yes Human tenant pack using the 
 
 # Build in a Yes Human pack
 
+## Before you start: catch up first
+
+If `yeshuman-pack-orientation` reported the pack as `behind` or `mismatch`, the catch-up (`yeshuman-platform-upgrade`) goes first, in its own PR, merged to `staging` before this work starts. **Never put a `requires_product` / `requiresProduct` change in a feature PR.** A feature that needs a newer platform slot waits for the catch-up to merge, then branches from the new `staging`.
+
 ## Layout
 
 ```
@@ -22,19 +26,21 @@ Theme, copy, nav, landing content and feature flags are **config**. Reach for `p
 ## Django plugin — `plugin/django/__init__.py`
 
 ```python
-from yeshuman.plugin import PluginConfig
+from yeshuman.sdk import PluginConfig
 
 PLUGIN = PluginConfig(
     apps=(),          # extra INSTALLED_APPS (tenant-owned apps under plugin/django/<app>/)
     routers=(),       # Ninja routers mounted by the host
     tools={},         # { focus: [tool, ...] } agent tools
     facts=(),         # chat-suggestion providers
-    seeds=(),         # extra management command names
     catalog={},       # tool-catalog labels
     mapper={},        # SSE write mappings
-    requires_product="0.1.0",
+    hooks={},         # core extension points (names in .platform/api/yeshuman/extensions.py)
+    requires_product=">=2.4,<3",   # same range as requiresProduct in plugin/labs/index.ts
 )
 ```
+
+Seeds are listed in `yeshuman.yaml` `seeds:`, not here.
 
 New tenant-owned models need migrations in the app's own `migrations/` folder. Generate them with the platform's manage.py pointed at this pack (`TENANT_ROOT` is set by the install).
 
@@ -83,7 +89,7 @@ You may squash-merge your own PR to `staging` only when **all** of these hold. C
 - Base is `staging`; the branch is cut from current `staging` with no unmerged parent PR (not stacked); the PR is not draft.
 - Small: roughly 15 files and 800 changed lines or fewer, excluding tests.
 - Pack files only (`plugin/`, `config/`, `seeds/`, `yeshuman.yaml`, pack-owned skills in `.cursor/skills/<unprefixed>/`). No `.platform/`, no copied platform code, no managed files (`.cursor/*` other than pack-owned skills, `deploy/*`, `.dockerignore`, `AGENTS.md`), no edits to `yeshuman-*` skills, and no new adopted skill without approval (see Skill tiers).
-- Any platform slot it needs is already on platform `staging`, and `requires_product` / `requiresProduct` matches.
+- Any platform slot it needs is already on platform `staging`, and the pack's pin already covers it (from a merged catch-up PR; this PR does not change the pin).
 - On the final head SHA, in your Cloud environment: install, `run.sh`, `yeshuman verify <handle>`, the pack tests for touched apps (new behaviour has a test), and `pnpm type-check` plus a browser check if Labs changed.
 - New migrations are additive, take the next number after `staging`, and no other open PR on this repo uses the same app and number.
 - The Railway PR preview is deployed on the head SHA, every service is green (api, ui, jobs if present), and `deploy/smoke.py` passes against it (health, `bootstrapped`, Labs loads, a demo login works). If PR previews do not deploy for this pack, say so in the PR and run the smoke check against `staging` after merging.
