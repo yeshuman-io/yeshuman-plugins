@@ -66,7 +66,7 @@ Commit only pack files (`.platform/` is git-ignored). Open a PR against `staging
 
 ## Merge
 
-You may squash-merge your own PR to `staging` only when **all** of these hold. CI is not required; your own runs are the evidence. Never merge or push to `master`: promotion is Yes Human's.
+You may squash-merge your own PR to `staging` only when **all** of these hold. CI is not required; your own runs are the evidence. Never merge or push to `master`: promotion to production is done by Yes Human's fleet coordinator, not by implementer agents.
 
 - Base is `staging`; the branch is cut from current `staging` with no unmerged parent PR (not stacked); the PR is not draft.
 - Small: roughly 15 files and 800 changed lines or fewer, excluding tests.
