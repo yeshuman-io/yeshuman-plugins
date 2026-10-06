@@ -51,7 +51,7 @@ export function register(app: YeshumanPluginApi) {
 
 The slots are defined by `YeshumanPluginApi` in `.platform/labs/src/plugin/types.ts`; read it for the current list. Labs builds alias `@tenant/plugin` and `@tenant/ui-config` to this pack. Use the platform's shared components and design tokens; do not copy platform components into the pack.
 
-If the slot you need does not exist, stop: that is a platform request.
+If the slot you need does not exist, stop: that is a platform request. Follow `yeshuman-platform-request`: a `platform-request` issue on this pack, or a `## Platform request` section in this PR's body if issue creation fails.
 
 ## Verify
 

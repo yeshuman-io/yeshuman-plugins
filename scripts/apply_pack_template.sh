@@ -34,6 +34,8 @@ if [[ -d "${TPL}/.cursor/rules" ]]; then
   mkdir -p "${PACK}/.cursor/rules"
   cp -R "${TPL}/.cursor/rules/." "${PACK}/.cursor/rules/"
 fi
+mkdir -p "${PACK}/.github/ISSUE_TEMPLATE"
+cp "${TPL}/.github/ISSUE_TEMPLATE/"* "${PACK}/.github/ISSUE_TEMPLATE/"
 mkdir -p "${PACK}/deploy"
 cp "${TPL}/deploy/"* "${PACK}/deploy/"
 cp "${TPL}/.dockerignore" "${PACK}/.dockerignore"
@@ -47,3 +49,8 @@ while IFS= read -r line; do
 done < "${TPL}/.gitignore"
 
 echo "Applied pack template to ${PACK} (${HANDLE}: labs ${LABS_PORT}, api ${API_PORT})"
+
+REMOTE="$(git -C "${PACK}" remote get-url origin 2>/dev/null | sed -E 's#^(https://([^@]+@)?github\.com/|git@github\.com:)##; s#\.git/?$##; s#/$##')"
+if [[ "${REMOTE}" =~ ^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$ ]]; then
+  "${HERE}/scripts/ensure_pack_labels.sh" "${REMOTE}" || echo "Labels not created; run scripts/ensure_pack_labels.sh ${REMOTE} with an Issues: write token." >&2
+fi
