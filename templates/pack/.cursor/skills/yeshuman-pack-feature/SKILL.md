@@ -74,7 +74,7 @@ Pack `.cursor/skills/` has three tiers:
 | Adopted third-party | Original name, on the approved list (currently `plan-to-make-a-plan`) | Yes Human approves | Kept |
 | Pack-owned | Unprefixed, written for this pack | The pack | Never touched |
 
-A pack-owned skill must not duplicate or override a `yeshuman-*` skill. Extend it by linking to the `yeshuman-*` skill and adding pack-specific detail, and do not restate or contradict its rules. A copy of a platform skill (`.platform/.cursor/skills`) is not pack-owned: it needs approval as an adopted skill.
+A pack-owned skill must not duplicate or override a `yeshuman-*` skill. Extend it by linking to the `yeshuman-*` skill and adding pack-specific detail, and do not restate or contradict its rules. If the behaviour you need looks reusable across packs, do not write a local skill. Raise a platform request (`yeshuman-platform-request`) or a skill request (an `agent-feedback` issue on this pack that names the skill to add or change) instead. A copy of a platform skill (`.platform/.cursor/skills`) is not pack-owned: it needs approval as an adopted skill.
 
 ## Merge
 
