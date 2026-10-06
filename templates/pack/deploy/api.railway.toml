@@ -9,4 +9,4 @@ healthcheckTimeout = 600
 healthcheckInterval = 30
 restartPolicyType = "ON_FAILURE"
 # Start command is the Dockerfile CMD (a shell, so $PORT expands).
-preDeployCommand = "python manage.py migrate && python manage.py bootstrap_tenant"
+preDeployCommand = "sh /app/tenant-pack/deploy/predeploy.sh"
