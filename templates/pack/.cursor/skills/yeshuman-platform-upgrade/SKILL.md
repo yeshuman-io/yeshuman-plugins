@@ -45,7 +45,7 @@ Never mix a catch-up into a feature PR. A feature that needs the new version wai
 
 ## 3. Merge
 
-A catch-up is the easiest self-merge there is: two pack files, two lines. Apply the bar in `yeshuman-pack-feature` (Merge) as usual. The Railway preview must be green on the head SHA, and nobody may have asked to hold. Squash-merge (`gh pr merge <n> --squash`, or the API with `merge_method=squash`). Then confirm the `staging` deploy is green. If it is not, open a revert PR straight away and file `agent-feedback`.
+A catch-up is the easiest self-merge there is: two pack files, two lines. Apply the bar in `yeshuman-pack-feature` (Merge) as usual. The Railway preview must be green on the head SHA, and nobody may have asked to hold. If this pack's PR environments deploy no services (Railway says "no services deployed" on every PR), say so in the PR; the local tests in step 2 then stand in for the preview. Squash-merge (`gh pr merge <n> --squash`, or the API with `merge_method=squash`). Then confirm the `staging` deploy is green and `uv run --with pyyaml deploy/smoke.py` passes against `staging`. If it is not, open a revert PR straight away and file `agent-feedback`.
 
 Then rebase or restart your feature branch on the new `staging` and carry on.
 
