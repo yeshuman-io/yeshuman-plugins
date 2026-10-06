@@ -53,6 +53,28 @@ The slots are defined by `YeshumanPluginApi` in `.platform/labs/src/plugin/types
 
 If the slot you need does not exist, stop: that is a platform request. Follow `yeshuman-platform-request`: a `platform-request` issue on this pack, or a `## Platform request` section in this PR's body if issue creation fails.
 
+## Canvases on pages you do not own (product contract 2.5.0)
+
+To add a canvas or a full-page report or view to a platform-owned page (for example `/platform/skills-catalog`) or to an entity the platform shows, register it. Do not edit the page in `.platform/`, and do not rebuild the page in the pack.
+
+```ts
+app.canvases?.register({
+  id: '<handle>.skill-pool',                         // prefix with your handle
+  title: 'Skill pool',
+  targets: [{ page: '/platform/skills-catalog' }, { entity: 'skill-domain' }],
+  page: { path: '/platform/skill-pool' },            // optional: same view as a deep-linkable full page
+  requiresProduct: '>=2.5.0,<3',
+  render: SkillPoolCanvas,                           // gets canvasId, mode, params, entity, data, pagePath, close
+  glance: SkillPoolGlance,                           // optional summary strip under the page header; gets open(), pagePath
+})
+```
+
+- A `page` target (a route pattern; `:id` params reach the canvas) adds a launcher to that page's header and renders your `glance` under it, and `?canvas=<id>` opens it. Set `launcher: false` when the glance has its own button. An `entity` target adds a launcher wherever the platform renders `PluginCanvasLaunchers` for that kind. The current kinds and pages are listed in `.platform/docs/TENANT_REPOS.md` § Pack canvases.
+- `render` fetches its own data from your pack routes or existing platform APIs with `authorizedFetch`. Lay it out with `ArtifactCanvasBody` when `mode` is `canvas`, and as page content when `mode` is `page`.
+- Open a registered canvas from your own pages with `useOpenPluginCanvas()(id, { entity, data })`. Prefer this to calling `openCanvas` with ad hoc content when the same view is offered from more than one place.
+- Raise `requiresProduct` (in the manifest and in `plugin/labs/index.ts`) to the contract that added any target you use. A manifest the platform cannot satisfy is skipped, not an error.
+- Need a target the platform does not render yet (a new entity kind or row)? That is a platform request for a launcher placement, not a new slot.
+
 ## Verify
 
 1. Restart the stack: `bash .platform/scripts/pack_workspace/run.sh`.
