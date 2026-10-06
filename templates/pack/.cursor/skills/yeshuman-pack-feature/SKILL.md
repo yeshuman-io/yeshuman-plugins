@@ -70,7 +70,7 @@ You may squash-merge your own PR to `staging` only when **all** of these hold. C
 
 - Base is `staging`; the branch is cut from current `staging` with no unmerged parent PR (not stacked); the PR is not draft.
 - Small: roughly 15 files and 800 changed lines or fewer, excluding tests.
-- Pack files only (`plugin/`, `config/`, `seeds/`, `yeshuman.yaml`). No `.platform/`, no copied platform code, no managed files (`.cursor/*`, `deploy/*`, `.dockerignore`, `AGENTS.md`). `.cursor/skills/` holds only the `yeshuman-*` skills.
+- Pack files only (`plugin/`, `config/`, `seeds/`, `yeshuman.yaml`). No `.platform/`, no copied platform code, no managed files (`.cursor/*`, `deploy/*`, `.dockerignore`, `AGENTS.md`). `.cursor/skills/` holds only the `yeshuman-*` skills plus approved ones (currently `plan-to-make-a-plan`).
 - Any platform slot it needs is already on platform `staging`, and `requires_product` / `requiresProduct` matches.
 - On the final head SHA, in your Cloud environment: install, `run.sh`, `yeshuman verify <handle>`, the pack tests for touched apps (new behaviour has a test), and `pnpm type-check` plus a browser check if Labs changed.
 - New migrations are additive, take the next number after `staging`, and no other open PR on this repo uses the same app and number.
