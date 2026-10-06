@@ -33,4 +33,6 @@ RUN pip install --no-cache-dir "uv==$(sed -n 's/^uv //p' .tool-versions)" \
 
 COPY . /app/tenant-pack
 
-CMD ["sh", "-c", "daphne -b 0.0.0.0 -p ${PORT:-8000} yeshuman.asgi:application"]
+# Fallback for a service whose pre-deploy only migrates: bootstrap a never-bootstrapped
+# database once. A failure is logged and the server still starts.
+CMD ["sh", "-c", "python manage.py bootstrap_tenant --if-needed || echo 'bootstrap_tenant --if-needed failed, see above'; exec daphne -b 0.0.0.0 -p ${PORT:-8000} yeshuman.asgi:application"]

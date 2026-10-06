@@ -92,7 +92,7 @@ You may squash-merge your own PR to `staging` only when **all** of these hold. C
 - Any platform slot it needs is already on platform `staging`, and the pack's pin already covers it (from a merged catch-up PR; this PR does not change the pin).
 - On the final head SHA, in your Cloud environment: install, `run.sh`, `yeshuman verify <handle>`, the pack tests for touched apps (new behaviour has a test), and `pnpm type-check` plus a browser check if Labs changed.
 - New migrations are additive, take the next number after `staging`, and no other open PR on this repo uses the same app and number.
-- The Railway PR preview is deployed on the head SHA, every service is green (api, ui, jobs if present), Labs loads and login works.
+- The Railway PR preview is deployed on the head SHA, every service is green (api, ui, jobs if present), and `deploy/smoke.py` passes against it (health, `bootstrapped`, Labs loads, a demo login works). If PR previews do not deploy for this pack, say so in the PR and run the smoke check against `staging` after merging.
 - No open review or comment asks for changes or a hold.
 - User-visible change (anything a person sees or does differently in Labs, the API or agent chat): the evidence comment from `yeshuman-linear-evidence` is posted on the Linear issue for the head SHA, and the PR body has the same "How to verify" block. If Linear is unreachable (no MCP, bad key), the full evidence plus "How to verify" in the PR body counts instead. The PR must state `Linear evidence pending: <issue>: <reason>`, and the evidence is posted to Linear once access works. With no Linear issue, the PR body carries the evidence. "Not verified" items are fine to list, but no evidence for the change itself blocks a self-merge.
 
