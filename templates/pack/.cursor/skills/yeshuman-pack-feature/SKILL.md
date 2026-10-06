@@ -1,6 +1,6 @@
 ---
 name: yeshuman-pack-feature
-description: Build a feature or change inside a Yes Human tenant pack using the platform's extension points — yeshuman.yaml, config/api.json and config/ui.json, and the Django and Labs plugin contracts — then run and verify it against the read-only platform, open the PR, and self-merge to staging only when the high-confidence bar is met. Use once yeshuman-pack-orientation has decided the work is a pack change.
+description: Build a feature or change inside a Yes Human tenant pack using the platform's extension points — yeshuman.yaml, config/api.json and config/ui.json, and the Django and Labs plugin contracts — then run and verify it against the read-only platform, open the PR with evidence (yeshuman-linear-evidence), and self-merge to staging only when the high-confidence bar is met. Use once yeshuman-pack-orientation has decided the work is a pack change.
 ---
 
 # Build in a Yes Human pack
@@ -58,11 +58,11 @@ If the slot you need does not exist, stop: that is a platform request.
 1. Restart the stack: `bash .platform/scripts/pack_workspace/run.sh`.
 2. `cd .platform/cli && uv run yeshuman verify <handle>`.
 3. Labs type-check: `cd .platform/labs && pnpm type-check`.
-4. Exercise the change in the browser on `labs_port`.
+4. Exercise the change in the browser on `labs_port`, and capture evidence as you go (`yeshuman-linear-evidence`: screenshot or video for UI, request/response or test output for backend).
 
 ## Ship
 
-Commit only pack files (`.platform/` is git-ignored). Open a PR against `staging` describing the change, how you verified it (commands and results), the Railway preview link, and any platform request it depends on.
+Commit only pack files (`.platform/` is git-ignored). Open a PR against `staging` describing the change, how you verified it (commands and results), the Railway preview link, and any platform request it depends on. Include the Given/When/Then "How to verify" block from `yeshuman-linear-evidence`. If the work is tied to a Linear issue, post the evidence comment on the issue too.
 
 ## Merge
 
@@ -76,5 +76,6 @@ You may squash-merge your own PR to `staging` only when **all** of these hold. C
 - New migrations are additive, take the next number after `staging`, and no other open PR on this repo uses the same app and number.
 - The Railway PR preview is deployed on the head SHA, every service is green (api, ui, jobs if present), Labs loads and login works.
 - No open review or comment asks for changes or a hold.
+- User-visible change (anything a person sees or does differently in Labs, the API or agent chat): the evidence comment from `yeshuman-linear-evidence` is posted on the Linear issue for the head SHA, and the PR body has the same "How to verify" block. "Not verified" items are fine to list, but missing evidence for the change itself blocks a self-merge. With no Linear issue, the PR body carries the evidence.
 
 Otherwise leave the PR open and say what is missing. Always ask first for: auth, billing, outbound email or SMS, integrations or secrets, migrations that alter or drop existing data, or anything you are unsure about. After merging, confirm the `staging` deploy is green; if it is not, open a revert or fix PR straight away.
