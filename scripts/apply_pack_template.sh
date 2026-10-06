@@ -12,9 +12,15 @@ YAML="${PACK}/yeshuman.yaml"
 field() { sed -n "s/^$1:[[:space:]]*//p" "${YAML}" | head -1 | tr -d "\"' "; }
 HANDLE="$(field handle)"; API_PORT="$(field api_port)"; LABS_PORT="$(field labs_port)"
 [[ -n "${HANDLE}" && -n "${API_PORT}" && -n "${LABS_PORT}" ]] || { echo "yeshuman.yaml needs handle, api_port, labs_port" >&2; exit 1; }
+ORIGIN_URL="$(field origin_url)"
+ORIGIN_WORKFLOW=""
+if [[ -n "${ORIGIN_URL}" ]]; then
+  [[ "${ORIGIN_URL}" =~ ^https://[A-Za-z0-9._/-]+$ ]] || { echo "yeshuman.yaml origin_url must be a plain https:// URL" >&2; exit 1; }
+  ORIGIN_WORKFLOW=" Use the Origin workflow for this repo: open and review pull requests on Origin at ${ORIGIN_URL}."
+fi
 
 mkdir -p "${PACK}/.cursor"
-cp "${TPL}/AGENTS.md" "${PACK}/AGENTS.md"
+sed -e "s|__ORIGIN_WORKFLOW__|${ORIGIN_WORKFLOW}|" "${TPL}/AGENTS.md" > "${PACK}/AGENTS.md"
 cp "${TPL}/.cursor/install.sh" "${TPL}/.cursor/Dockerfile" "${PACK}/.cursor/"
 chmod +x "${PACK}/.cursor/install.sh"
 # Interim until team marketplace Cloud attach works: Cloud Agents load

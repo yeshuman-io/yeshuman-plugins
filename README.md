@@ -27,6 +27,8 @@ Cursor Dashboard → **Plugins & MCPs** → **Add Marketplace** → **Import fro
 scripts/apply_pack_template.sh <pack_dir>   # fills handle and ports from yeshuman.yaml
 ```
 
+Optional `origin_url` in `yeshuman.yaml` (a plain `https://` URL) adds a sentence to `AGENTS.md` telling agents to open and review pull requests on Origin at that URL. Without it, nothing is added.
+
 Cloud secrets for the pack's Cursor team: `YESHUMAN_PLATFORM_TOKEN` (read access to the platform repo), `OPENAI_API_KEY`, optional `YESHUMAN_PLATFORM_REF` (default `master`) and `YESHUMAN_SEED_DEPLOYMENT_USERS`.
 
 ## Cloud base image
