@@ -24,6 +24,10 @@ If install, run or verify fails, or these instructions don't match what you find
 2. Open an issue on **this repo** labelled `agent-feedback`: the command you ran, the error (last lines of output), and which instruction was wrong or missing. Never paste secret values.
 3. Stop and tell the user, with the issue link.
 
+## Evidence on Linear
+
+If your work is tied to a Linear issue, post evidence on that issue and put the same Given/When/Then "How to verify" block in the PR body. Evidence means a screenshot or short video for UI changes, and a request/response or test output for backend changes. Follow `yeshuman-linear-evidence`. If you cannot capture or post evidence, say so explicitly; never fake it. User-visible changes need posted evidence before you self-merge to `staging`.
+
 ## Run it
 
 - Install (Cursor Cloud does this on boot): `bash .cursor/install.sh`
