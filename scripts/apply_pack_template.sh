@@ -38,6 +38,8 @@ mkdir -p "${PACK}/.github/ISSUE_TEMPLATE"
 cp "${TPL}/.github/ISSUE_TEMPLATE/"* "${PACK}/.github/ISSUE_TEMPLATE/"
 mkdir -p "${PACK}/deploy"
 cp "${TPL}/deploy/"* "${PACK}/deploy/"
+HANDLE_ENV="$(printf '%s' "${HANDLE}" | tr '[:lower:]-' '[:upper:]_')"
+sed -i "s/__HANDLE_ENV__/${HANDLE_ENV}/g" "${PACK}/deploy/ui.Dockerfile"
 cp "${TPL}/.dockerignore" "${PACK}/.dockerignore"
 sed -e "s/__HANDLE__/${HANDLE}/g" -e "s/__API_PORT__/${API_PORT}/g" -e "s/__LABS_PORT__/${LABS_PORT}/g" \
   "${TPL}/.cursor/environment.json.tmpl" > "${PACK}/.cursor/environment.json"
