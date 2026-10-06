@@ -22,7 +22,8 @@ If install, run or verify fails, or these instructions don't match what you find
 
 1. Do not edit `.cursor/*` (install script, environment, Dockerfile) or copy platform logic into this pack to get past it. These files are managed by Yes Human.
 2. Open an issue on **this repo** labelled `agent-feedback`: the command you ran, the error (last lines of output), and which instruction was wrong or missing. Never paste secret values.
-3. Stop and tell the user, with the issue link.
+3. If issue creation fails (the Cloud token may lack Issues permission), put the same text under `## Agent feedback` in your PR body, or in your reply if you have no PR.
+4. Stop and tell the user, with the issue or PR link.
 
 ## Evidence on Linear
 
@@ -45,7 +46,7 @@ If your work is tied to a Linear issue, post evidence on that issue and put the 
 
 ## Pack or platform?
 
-If the request can be met with config, theme, seeds or a pack plugin using the extension points the platform already offers, change **this repo** and open a PR here. If it needs a new extension point or a change to shared behaviour, it is a **platform** change: do not edit `.platform/`. Prototype it there if useful, then open an issue on this repo labelled `platform-request` with the problem, the proposed change and the diff (`git -C .platform diff`). Yes Human triages it.
+If the request can be met with config, theme, seeds or a pack plugin using the extension points the platform already offers, change **this repo** and open a PR here. If it needs a new extension point or a change to shared behaviour, it is a **platform** change: do not edit `.platform/`. Prototype it there if useful, then open an issue on this repo labelled `platform-request` from `.github/ISSUE_TEMPLATE/platform-request.md`: what's needed, why, what it blocks, and the proposed slot or contract. If GitHub issue creation fails (the Cloud token may lack Issues permission), put the same text under `## Platform request` in the body of the pack PR that needs it. Yes Human picks up both, links the platform PR and the product contract version on your issue or PR, and you then bump `requiresProduct` and merge. See `yeshuman-platform-request`.
 
 Install the `yeshuman-pack` Cursor plugin (team marketplace) for the detailed skills.
 
