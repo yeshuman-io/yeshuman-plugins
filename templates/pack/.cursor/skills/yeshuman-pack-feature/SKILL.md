@@ -1,6 +1,6 @@
 ---
 name: yeshuman-pack-feature
-description: Build a feature or change inside a Yes Human tenant pack using the platform's extension points — yeshuman.yaml, config/api.json and config/ui.json, and the Django and Labs plugin contracts — then run and verify it against the read-only platform. Use once yeshuman-pack-orientation has decided the work is a pack change.
+description: Build a feature or change inside a Yes Human tenant pack using the platform's extension points — yeshuman.yaml, config/api.json and config/ui.json, and the Django and Labs plugin contracts — then run and verify it against the read-only platform, open the PR, and self-merge to staging only when the high-confidence bar is met. Use once yeshuman-pack-orientation has decided the work is a pack change.
 ---
 
 # Build in a Yes Human pack
@@ -62,4 +62,19 @@ If the slot you need does not exist, stop: that is a platform request.
 
 ## Ship
 
-Commit only pack files (`.platform/` is git-ignored). Open a PR on this repo describing the change, how you verified it, and any platform request it depends on.
+Commit only pack files (`.platform/` is git-ignored). Open a PR against `staging` describing the change, how you verified it (commands and results), the Railway preview link, and any platform request it depends on.
+
+## Merge
+
+You may squash-merge your own PR to `staging` only when **all** of these hold. CI is not required; your own runs are the evidence. Never merge or push to `master`: promotion to production is done by Yes Human's fleet coordinator, not by implementer agents.
+
+- Base is `staging`; the branch is cut from current `staging` with no unmerged parent PR (not stacked); the PR is not draft.
+- Small: roughly 15 files and 800 changed lines or fewer, excluding tests.
+- Pack files only (`plugin/`, `config/`, `seeds/`, `yeshuman.yaml`). No `.platform/`, no copied platform code, no managed files (`.cursor/*`, `deploy/*`, `.dockerignore`, `AGENTS.md`). `.cursor/skills/` holds only the `yeshuman-*` skills plus approved ones (currently `plan-to-make-a-plan`).
+- Any platform slot it needs is already on platform `staging`, and `requires_product` / `requiresProduct` matches.
+- On the final head SHA, in your Cloud environment: install, `run.sh`, `yeshuman verify <handle>`, the pack tests for touched apps (new behaviour has a test), and `pnpm type-check` plus a browser check if Labs changed.
+- New migrations are additive, take the next number after `staging`, and no other open PR on this repo uses the same app and number.
+- The Railway PR preview is deployed on the head SHA, every service is green (api, ui, jobs if present), Labs loads and login works.
+- No open review or comment asks for changes or a hold.
+
+Otherwise leave the PR open and say what is missing. Always ask first for: auth, billing, outbound email or SMS, integrations or secrets, migrations that alter or drop existing data, or anything you are unsure about. After merging, confirm the `staging` deploy is green; if it is not, open a revert or fix PR straight away.
