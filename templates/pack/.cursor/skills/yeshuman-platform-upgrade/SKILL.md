@@ -18,7 +18,7 @@ python3 .platform/scripts/pack_workspace/contract_status.py
 | Status | Do |
 |--------|----|
 | `current` | Nothing. Go back to your task. |
-| `behind` or `mismatch` | Catch up (below) **before** any feature work, unless the pack is pinned or a catch-up PR is already open. |
+| `behind` or `mismatch` | Catch up (below) **before** any feature work, unless the pack is pinned, a catch-up PR is already open, or your feature itself needs the newer version (then raise the floor in the feature PR, with a `## Platform pin` section in its body). |
 | `incompatible` | The pin excludes this platform (a new major, or a floor above it). Stop: file an `agent-feedback` issue with the output. Never edit the cap yourself. |
 | `missing` | A plugin side declares no pin. File `agent-feedback` and stop. |
 
@@ -29,7 +29,7 @@ python3 .platform/scripts/pack_workspace/contract_status.py
 
 ## 2. Catch up (its own PR)
 
-Never mix a catch-up into a feature PR. A feature that needs the new version waits for this PR to merge.
+A pure catch-up (nothing in your task needs the newer version) never rides in a feature PR. The exception: when the feature itself needs the newer contract, the feature PR raises the floor itself, with a `## Platform pin` section in its body saying what needs it (`yeshuman-pack-feature`, Before you start). Then there is no separate catch-up.
 
 1. `git fetch origin staging && git checkout -b <prefix>/platform-catch-up-<X.Y> origin/staging` (cut from current `staging`).
 2. Read what changed: the contract index at the top of `.platform/CHANGELOG.md` from your floor up to the latest, and every `### Deprecated` entry. Grep the pack for each deprecated name (`rg -n '<name>' plugin/`). If one is used, switch to the replacement in this PR only when it is a small, mechanical rename. Otherwise list it in the PR and leave the switch for a follow-up.

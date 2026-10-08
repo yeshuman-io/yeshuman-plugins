@@ -5,9 +5,11 @@ description: Build a feature or change inside a Yes Human tenant pack using the 
 
 # Build in a Yes Human pack
 
-## Before you start: catch up first
+## Before you start: the platform pin
 
-If `yeshuman-pack-orientation` reported the pack as `behind` or `mismatch`, the catch-up (`yeshuman-platform-upgrade`) goes first, in its own PR, merged to `staging` before this work starts. **Never put a `requires_product` / `requiresProduct` change in a feature PR.** A feature that needs a newer platform slot waits for the catch-up to merge, then branches from the new `staging`.
+If `yeshuman-pack-orientation` reported the pack as `behind` or `mismatch` and this feature does not need anything newer than the current floor, the catch-up (`yeshuman-platform-upgrade`) goes first, in its own PR, merged to `staging` before this work starts.
+
+**A feature PR may raise the floor only when the feature itself needs the newer contract** (it uses a slot, hook, export or field that first shipped in that version). Run `contract_status.py --write` in the feature PR, and add a `## Platform pin` section to the PR body: old pin → new pin, and what in this PR needs it (for example "uses `app.canvas.register`, contract 2.5"). A pure catch-up, where nothing in the feature needs the new version, still goes in its own PR first (`yeshuman-platform-upgrade`).
 
 ## Layout
 
@@ -111,7 +113,7 @@ You may squash-merge your own PR to `staging` only when **all** of these hold. C
 - Base is `staging`; the branch is cut from current `staging` with no unmerged parent PR (not stacked); the PR is not draft.
 - Small: roughly 15 files and 800 changed lines or fewer, excluding tests.
 - Pack files only (`plugin/`, `config/`, `seeds/`, `yeshuman.yaml`, pack-owned skills in `.cursor/skills/<unprefixed>/`). No `.platform/`, no copied platform code, no managed files (`.cursor/*` other than pack-owned skills, `deploy/*`, `.dockerignore`, `AGENTS.md`), no edits to `yeshuman-*` skills, and no new adopted skill without approval (see Skill tiers).
-- Any platform slot it needs is already on platform `staging`, and the pack's pin already covers it (from a merged catch-up PR; this PR does not change the pin).
+- Any platform slot it needs is already on platform `staging`. The pin covers it: either it already did, or this PR raises the floor because the feature needs it, with a `## Platform pin` section in the body saying why. A pin change with no feature need belongs in a catch-up PR instead.
 - On the final head SHA, in your Cloud environment: install, `run.sh`, `yeshuman verify <handle>`, the pack tests for touched apps (new behaviour has a test), and `pnpm type-check` plus a browser check if Labs changed.
 - New migrations are additive, take the next number after `staging`, and no other open PR on this repo uses the same app and number.
 - The Railway PR preview is deployed on the head SHA, every service is green (api, ui, jobs if present), and `deploy/smoke.py` passes against it (health, `bootstrapped`, Labs loads, a demo login works). If PR previews do not deploy for this pack, say so in the PR and run the smoke check against `staging` after merging. A pin-only catch-up PR (`yeshuman-platform-upgrade`) may merge on its local tests while PR environments can't deploy, followed by the post-merge `staging` smoke check. Feature PRs still need the preview.
