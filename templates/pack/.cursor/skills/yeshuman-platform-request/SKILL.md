@@ -73,7 +73,7 @@ Either path is picked up: the fleet scans pack issues labelled `platform-request
 The comment tells you the version, for example "merged to platform `staging`, product contract 2.4.0". Then:
 
 1. Re-run `bash .cursor/install.sh` (or start a new agent) so `.platform/` has the change.
-2. Catch the pin up in its own PR (`yeshuman-platform-upgrade`): `contract_status.py --write` sets both pins to `>=<version minor>,<<next major>>` (for example `>=2.4,<3`). Merge that first. If the pin change is the only thing the request needed, that PR is the whole fulfilment.
+2. Raise the pin in the feature PR that needs it: `contract_status.py --write` sets both pins to `>=<version minor>,<<next major>>` (for example `>=2.5,<3`). Add a `## Platform pin` section to the PR body naming what in the PR needs the new version. If the pin change is the only thing the request needed, it is a pin-only PR on its own.
 3. Rebase the feature PR on the new `staging`, drop any fallback you no longer need, verify as usual (`yeshuman-pack-feature`), then mark it ready and merge it to `staging` under the self-merge bar. Remove `## Platform request` from the PR body only if Yes Human says it is fulfilled, and close the issue if you opened one.
 
 If Yes Human declines or changes the proposal, the comment says why and what to do instead.

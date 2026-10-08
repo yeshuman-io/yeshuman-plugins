@@ -33,7 +33,7 @@ python3 .platform/scripts/pack_workspace/contract_status.py
 ```
 
 - `current`: carry on.
-- `behind` or `mismatch`: the pack's `requires_product` floor is older than the platform on `staging`. Do the catch-up **first, as its own PR** (`yeshuman-platform-upgrade`), then the task. Skip it only when `yeshuman.yaml` has `platform_pin:`, an open `Platform catch-up:` PR already exists, or the user says the client is near a release. Say which in your report.
+- `behind` or `mismatch`: the pack's `requires_product` floor is older than the platform on `staging`. Do the catch-up **first, as its own PR** (`yeshuman-platform-upgrade`), then the task. If the task itself needs the newer contract, raise the floor in the feature PR instead and say why under `## Platform pin` (`yeshuman-pack-feature`). Skip it when `yeshuman.yaml` has `platform_pin:`, an open `Platform catch-up:` PR already exists, or the user says the client is near a release. Say which in your report.
 - `incompatible` or `missing`: stop and file `agent-feedback` with the output. Never raise the `<N+1` cap: majors are rolled out by Yes Human.
 
 If the script is not in `.platform/`, the platform ref predates it: note that and carry on.
