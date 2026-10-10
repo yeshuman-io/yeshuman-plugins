@@ -32,6 +32,7 @@ ARG VITE_API_URL
 ARG VITE_PUBLIC_JOBS_BOARD_URL
 ARG VITE_PLATFORM_SIM_UI_ENABLED
 ARG VITE_DEBUG_SSE
+ARG VITE_CSRF_COOKIE_NAME
 # Railway passes only declared ARGs into a build. On a PR environment Labs rewrites VITE_API_URL
 # to this environment's own API (labs/src/lib/railway-preview-api.ts).
 ARG RAILWAY_ENVIRONMENT_NAME
