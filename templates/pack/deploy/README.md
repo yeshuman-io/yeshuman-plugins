@@ -19,7 +19,7 @@ Railway reads only a root `railway.toml` unless a service's **Config file path**
 On `staging`, and on whichever environment PR environments copy, use `${{…}}` references so each environment talks to its own services:
 
 - api: `DATABASE_URL=${{<handle>-db.DATABASE_URL}}`, `REDIS_URL=${{<handle>-redis.REDIS_URL}}`, `ALLOWED_HOSTS` with `${{RAILWAY_PUBLIC_DOMAIN}}`, `CORS_ALLOWED_ORIGINS` and `FRONTEND_*` bases with `https://${{<handle>-ui.RAILWAY_PUBLIC_DOMAIN}}`.
-- ui: `VITE_API_URL=https://${{<handle>-api.RAILWAY_PUBLIC_DOMAIN}}`, `VITE_ALLOWED_HOSTS` with `${{RAILWAY_PUBLIC_DOMAIN}}`.
+- ui: `VITE_API_URL=https://${{<handle>-api.RAILWAY_PUBLIC_DOMAIN}}`, `VITE_ALLOWED_HOSTS` with `${{RAILWAY_PUBLIC_DOMAIN}}`, `VITE_CSRF_COOKIE_NAME` when the API uses a non-default `CSRF_COOKIE_NAME` (must match the API value; inlined at build time).
 - jobs: `PUBLIC_JOBS_API_ORIGIN=https://${{<handle>-api.RAILWAY_PUBLIC_DOMAIN}}`.
 
 Production keeps branded hosts, and adds them alongside the references elsewhere. PR builds also rewrite the API URL to the PR environment's own API (`RAILWAY_SERVICE_<HANDLE>_API_URL`), which is why `ui.Dockerfile` declares those `ARG`s. Full convention: platform `docs/RAILWAY.md` (Reference-variable convention).
