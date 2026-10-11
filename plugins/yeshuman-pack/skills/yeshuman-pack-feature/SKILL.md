@@ -1,6 +1,6 @@
 ---
 name: yeshuman-pack-feature
-description: Build a feature or change inside a Yes Human tenant pack using the platform's extension points — yeshuman.yaml, config/api.json and config/ui.json, and the Django and Labs plugin contracts — then run and verify it against the read-only platform, open the PR with evidence (yeshuman-linear-evidence), and self-merge to staging only when the high-confidence bar is met. Use once yeshuman-pack-orientation has decided the work is a pack change.
+description: Build a feature or change inside a Yes Human tenant pack using the platform's extension points — yeshuman.yaml, config/api.json and config/ui.json, and the Django and Labs plugin contracts — then run and verify it against the read-only platform, open the PR with evidence (yeshuman-linear-evidence), and self-merge to staging only when the high-confidence bar is met. When the change renders UI, read DESIGN_SYSTEM.md and the matching PLATFORM_UI_PATTERNS.md row, match the closest existing surface, reuse platform components, and name that pattern with a screenshot in the PR. Use once yeshuman-pack-orientation has decided the work is a pack change.
 ---
 
 # Build in a Yes Human pack
@@ -57,7 +57,11 @@ export function register(app: YeshumanPluginApi) {
 }
 ```
 
-The slots are defined by `YeshumanPluginApi` in `.platform/labs/src/plugin/types.ts`; read it for the current list. Labs builds alias `@tenant/plugin` and `@tenant/ui-config` to this pack. Use the platform's shared components and design tokens; do not copy platform components into the pack.
+The slots are defined by `YeshumanPluginApi` in `.platform/labs/src/plugin/types.ts`; read it for the current list. Labs builds alias `@tenant/plugin` and `@tenant/ui-config` to this pack.
+
+## When the change renders UI
+
+When a change renders UI, read `.platform/docs/DESIGN_SYSTEM.md` and the matching row of `.platform/docs/PLATFORM_UI_PATTERNS.md`. Match the closest existing surface. Reuse the platform's shared components and design tokens; do not copy platform components into the pack. Do not invent a control where a platform pattern already exists (`window.confirm`, raw UUIDs, CSV pasted into a textarea).
 
 If the slot you need does not exist, stop: that is a platform request. Follow `yeshuman-platform-request`: a `platform-request` issue on this pack, or a `## Platform request` section in this PR's body if issue creation fails.
 
@@ -92,7 +96,7 @@ app.canvases?.register({
 
 ## Ship
 
-Commit only pack files (`.platform/` is git-ignored). Open a PR against `staging` describing the change, how you verified it (commands and results), the Railway preview link, and any platform request it depends on. Include the Given/When/Then "How to verify" block from `yeshuman-linear-evidence`. If the work is tied to a Linear issue, post the evidence comment on the issue too.
+Commit only pack files (`.platform/` is git-ignored). Open a PR against `staging` describing the change, how you verified it (commands and results), the Railway preview link, and any platform request it depends on. Include the Given/When/Then "How to verify" block from `yeshuman-linear-evidence`. If the work is tied to a Linear issue, post the evidence comment on the issue too. When the change renders UI, the PR body names the pattern followed and includes a screenshot of the rendered UI.
 
 ## Skill tiers
 
@@ -118,7 +122,7 @@ You may squash-merge your own PR to `staging` only when **all** of these hold. C
 - New migrations are additive, take the next number after `staging`, and no other open PR on this repo uses the same app and number.
 - The Railway PR preview is deployed on the head SHA, every service is green (api, ui, jobs if present), and `deploy/smoke.py` passes against it (health, `bootstrapped`, Labs loads, a demo login works). If PR previews do not deploy for this pack, say so in the PR and run the smoke check against `staging` after merging. A pin-only catch-up PR (`yeshuman-platform-upgrade`) may merge on its local tests while PR environments can't deploy, followed by the post-merge `staging` smoke check. Feature PRs still need the preview.
 - No open review or comment asks for changes or a hold.
-- User-visible change (anything a person sees or does differently in Labs, the API or agent chat): the evidence comment from `yeshuman-linear-evidence` is posted on the Linear issue for the head SHA, and the PR body has the same "How to verify" block. If Linear is unreachable (no MCP, bad key), the full evidence plus "How to verify" in the PR body counts instead. The PR must state `Linear evidence pending: <issue>: <reason>`, and the evidence is posted to Linear once access works. With no Linear issue, the PR body carries the evidence. "Not verified" items are fine to list, but no evidence for the change itself blocks a self-merge.
+- User-visible change (anything a person sees or does differently in Labs, the API or agent chat): the evidence comment from `yeshuman-linear-evidence` is posted on the Linear issue for the head SHA, and the PR body has the same "How to verify" block. When the change renders UI, that evidence names the pattern followed and includes a screenshot of the rendered UI. If Linear is unreachable (no MCP, bad key), the full evidence plus "How to verify" in the PR body counts instead. The PR must state `Linear evidence pending: <issue>: <reason>`, and the evidence is posted to Linear once access works. With no Linear issue, the PR body carries the evidence. "Not verified" items are fine to list, but no evidence for the change itself blocks a self-merge.
 
 **Squash only.** Merge with `gh pr merge <n> --squash`, or through the API with `merge_method=squash`. The PR title becomes the commit title. Never use a merge commit or a rebase merge; `staging` history stays one commit per PR.
 
