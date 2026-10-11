@@ -1,6 +1,6 @@
 ---
 name: yeshuman-platform-request
-description: Raise a Yes Human platform change from a tenant pack — a platform-request issue on the pack from the template (what's needed, why, what it blocks, proposed slot or contract), or, if GitHub issue creation fails, a "## Platform request" section in the pack PR body. Covers how Yes Human picks it up and what to do when the platform PR lands. Use when yeshuman-pack-orientation decides the work needs a new extension point, a contract change or a platform fix.
+description: Raise a Yes Human platform change from a tenant pack — a platform-request issue on the pack from the template (what's needed, why, what it blocks, proposed slot or contract), or, if GitHub issue creation fails, a "## Platform request" section in the pack PR body. A user-visible prototype is evidence only when its UI meets the yeshuman-pack-feature bar, not because it runs. Covers how Yes Human picks it up and what to do when the platform PR lands. Use when yeshuman-pack-orientation decides the work needs a new extension point, a contract change or a platform fix.
 ---
 
 # Raise a platform request
@@ -10,7 +10,8 @@ Pack agents cannot change the platform. Yes Human builds platform changes on the
 ## 1. Prove the need
 
 - Confirm the pack cannot do it: grep `.platform/` for the config key, plugin slot, API or page you need.
-- Optional: prototype in `.platform/`, run the stack and show it works. Keep it tenant-neutral (no tenant names, handles or branding in platform code). Never commit or push from `.platform/`.
+- Optional: prototype in `.platform/`. Keep it tenant-neutral (no tenant names, handles or branding in platform code). Never commit or push from `.platform/`.
+- A prototype counts as evidence only when its UI meets the bar in `yeshuman-pack-feature` (When the change renders UI). "It runs" is not enough for anything user-visible. Name the pattern followed and include a screenshot of the rendered UI.
 
 ## 2. Write the request
 
