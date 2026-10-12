@@ -11,6 +11,7 @@ For agents working in a Yes Human **tenant pack** (a repo with `yeshuman.yaml` a
 | Rule `platform-readonly` | `.platform/` is a read-only platform checkout; never commit from it. |
 | Skill `yeshuman-pack-orientation` | The pack/platform split, install and run, and the pack-or-platform decision. |
 | Skill `yeshuman-pack-feature` | Building through config and the Django / Labs plugin contracts, then verifying. |
+| Skill `yeshuman-pack-tools` | Agent tool contract: signed-in user via `get_user_for_tool`, record id on create and list, same id on read, update, and delete. |
 | Skill `yeshuman-platform-request` | Raising a platform change as a `platform-request` issue (template in the pack's `.github/ISSUE_TEMPLATE/`), or a `## Platform request` PR-body section when issue creation fails; what to do when the platform PR lands. |
 | Skill `yeshuman-platform-upgrade` | Catching the pack's `requires_product` pin up to the latest platform minor in its own PR (a feature PR raises it only when the feature needs it, with a `## Platform pin` note) (`contract_status.py`, reinstall, test, squash-merge to `staging`); staying pinned with `platform_pin:`; majors are never self-upgraded. |
 | Skill `yeshuman-plan-to-make-a-plan` | Planning a Linear issue with the user (discovery, pack vs platform, where it lives) before any build. Slash command `/yeshuman-plan-to-make-a-plan`. |

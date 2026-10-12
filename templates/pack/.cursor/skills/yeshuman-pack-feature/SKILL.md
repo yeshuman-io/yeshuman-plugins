@@ -42,6 +42,8 @@ PLUGIN = PluginConfig(
 )
 ```
 
+When the change adds or edits agent tools, follow `yeshuman-pack-tools`.
+
 Seeds are listed in `yeshuman.yaml` `seeds:`, not here.
 
 New tenant-owned models need migrations in the app's own `migrations/` folder. Generate them with the platform's manage.py pointed at this pack (`TENANT_ROOT` is set by the install).
