@@ -36,8 +36,10 @@ if [[ -d "${TPL}/.cursor/rules" ]]; then
   mkdir -p "${PACK}/.cursor/rules"
   cp -R "${TPL}/.cursor/rules/." "${PACK}/.cursor/rules/"
 fi
+cp "${TPL}/CLAUDE.md" "${PACK}/CLAUDE.md"
 mkdir -p "${PACK}/.github/ISSUE_TEMPLATE"
 cp "${TPL}/.github/ISSUE_TEMPLATE/"* "${PACK}/.github/ISSUE_TEMPLATE/"
+cp "${TPL}/.github/pull_request_template.md" "${PACK}/.github/pull_request_template.md"
 mkdir -p "${PACK}/deploy"
 find "${TPL}/deploy" -maxdepth 1 -type f -exec cp {} "${PACK}/deploy/" \;
 HANDLE_ENV="$(printf '%s' "${HANDLE}" | tr '[:lower:]-' '[:upper:]_')"

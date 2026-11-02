@@ -1,0 +1,14 @@
+---
+description: Design before code; route new nouns, tables, config keys and hardcoded lists through yeshuman-ontology-steward
+alwaysApply: true
+---
+
+# Design before code
+
+A colleague's request is a requirement for what they want to see, not a schema.
+
+- Before adding a Django model, app or migration, a classifier profile, a config key, a hardcoded list or user-facing copy in code, a `plugin/shared` spec, an agent tool, or a new UI noun, follow `yeshuman-ontology-steward` (`.cursor/skills/yeshuman-ontology-steward/SKILL.md`).
+- Map the request onto existing platform abstractions first (`.platform/docs/ONTOLOGY_DOC_MAP.md`), and cite or append a decision in `docs/ontology/decisions.md`. Stakeholder words stay in the UI (`config/ui.json`, `docs/ontology/vocabulary.md`), not in model names.
+- No code before a design record. The PR body carries it under `## Design record`. If nothing fits, open a `design-review` or `platform-request` issue; do not invent a table.
+
+Steward canary: heron-42.

@@ -43,11 +43,16 @@ If your work is tied to a Linear issue, post evidence on that issue and put the 
 - `plugin/django/` — tenant-owned Django apps (`PLUGIN` in `__init__.py`). Import platform symbols from `yeshuman.sdk` only.
 - `plugin/ui/` — tenant-owned UI routes, nav and components (`index.ts`). Import platform symbols from `@yeshuman/sdk` only.
 - `seeds/` — demo users and other pack-owned seed files. Manifest `seeds:` is the command list.
+- `docs/ontology/` — pack-owned design memory: `decisions.md` (append-only design records) and `vocabulary.md` (this tenant's words → platform records).
 
 ## Pack or platform?
 
 If the request can be met with config, theme, seeds or a pack plugin using the extension points the platform already offers, change **this repo** and open a PR here. If it needs a new extension point or a change to shared behaviour, it is a **platform** change: do not edit `.platform/`. Prototype it there if useful, then open an issue on this repo labelled `platform-request` from `.github/ISSUE_TEMPLATE/platform-request.md`: what's needed, why, what it blocks, and the proposed slot or contract. If GitHub issue creation fails (the Cloud token may lack Issues permission), put the same text under `## Platform request` in the body of the pack PR that needs it. Yes Human picks up both, links the platform PR and the product contract version on your issue or PR, and you then raise the pin in the PR whose feature needs it (saying why under `## Platform pin`) and merge. A pure catch-up goes in its own PR (`yeshuman-platform-upgrade`). See `yeshuman-platform-request`.
 
+## Design before code
+
+Colleagues' requests are requirements for what they want to see, not a schema. Before adding a model, app or migration, a classifier profile, a config key, a hardcoded list or copy in code, a `plugin/shared` spec, an agent tool, or a new UI noun, follow `yeshuman-ontology-steward`: restate the requirement, map it onto existing platform abstractions (`.platform/docs/ONTOLOGY_DOC_MAP.md`), record a design record in `docs/ontology/decisions.md`, then build. The PR body carries that record under `## Design record` (`.github/pull_request_template.md`). If nothing fits, open a `design-review` issue (`.github/ISSUE_TEMPLATE/design-review.md`) or a `platform-request`; do not invent a table. UI copy stays in the stakeholder's words in `config/ui.json`, and this tenant's words map to records in `docs/ontology/vocabulary.md`.
+
 Install the `yeshuman-pack` Cursor plugin (team marketplace) for the detailed skills.
 
-Until team marketplace Cloud attach works, the same `yeshuman-*` skills and `platform-readonly` rule are also committed under `.cursor/skills/` and `.cursor/rules/` so Cloud Agents load them from this clone. Do not edit those copies; they are Yes Human template files.
+Until team marketplace Cloud attach works, the same `yeshuman-*` skills and the `platform-readonly` and `ontology-steward` rules are also committed under `.cursor/skills/` and `.cursor/rules/` so Cloud Agents load them from this clone. Do not edit those copies, `CLAUDE.md`, or `.github/pull_request_template.md`; they are Yes Human template files.
