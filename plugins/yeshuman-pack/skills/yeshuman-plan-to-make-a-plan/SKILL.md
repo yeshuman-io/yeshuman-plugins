@@ -100,10 +100,10 @@ or read-only greps are OK; do not implement.
   `yeshuman-platform-request`. Do not edit `.platform/` for real.
 - Both: say which part is pack now and what waits on Yes Human.
 
-**Where it lives** — config vs `plugin/django` vs `plugin/labs` vs platform
+**Where it lives** — config vs `plugin/django` vs `plugin/ui` vs platform
 module. Prefer established patterns over a parallel style.
 
-**Labs / UI** — which surfaces? Converge on an existing pattern or
+**UI** — which surfaces? Converge on an existing pattern or
 deliberately replace? Deep product UX (who, journey, states) can wait for
 platform `ui-ux-application-planning` when that skill is in context.
 

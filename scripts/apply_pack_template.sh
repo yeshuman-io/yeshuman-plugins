@@ -10,8 +10,10 @@ YAML="${PACK}/yeshuman.yaml"
 
 [[ -f "${YAML}" ]] || { echo "No yeshuman.yaml in ${PACK}" >&2; exit 1; }
 field() { sed -n "s/^$1:[[:space:]]*//p" "${YAML}" | head -1 | tr -d "\"' "; }
-HANDLE="$(field handle)"; API_PORT="$(field api_port)"; LABS_PORT="$(field labs_port)"
-[[ -n "${HANDLE}" && -n "${API_PORT}" && -n "${LABS_PORT}" ]] || { echo "yeshuman.yaml needs handle, api_port, labs_port" >&2; exit 1; }
+HANDLE="$(field handle)"; API_PORT="$(field api_port)"; UI_PORT="$(field ui_port)"
+# labs_port is the pre-rename key; the platform still accepts it.
+[[ -n "${UI_PORT}" ]] || UI_PORT="$(field labs_port)"
+[[ -n "${HANDLE}" && -n "${API_PORT}" && -n "${UI_PORT}" ]] || { echo "yeshuman.yaml needs handle, api_port, ui_port" >&2; exit 1; }
 ORIGIN_URL="$(field origin_url)"
 ORIGIN_WORKFLOW=""
 if [[ -n "${ORIGIN_URL}" ]]; then
@@ -41,7 +43,7 @@ find "${TPL}/deploy" -maxdepth 1 -type f -exec cp {} "${PACK}/deploy/" \;
 HANDLE_ENV="$(printf '%s' "${HANDLE}" | tr '[:lower:]-' '[:upper:]_')"
 sed -i "s/__HANDLE_ENV__/${HANDLE_ENV}/g" "${PACK}/deploy/ui.Dockerfile"
 cp "${TPL}/.dockerignore" "${PACK}/.dockerignore"
-sed -e "s/__HANDLE__/${HANDLE}/g" -e "s/__API_PORT__/${API_PORT}/g" -e "s/__LABS_PORT__/${LABS_PORT}/g" \
+sed -e "s/__HANDLE__/${HANDLE}/g" -e "s/__API_PORT__/${API_PORT}/g" -e "s/__UI_PORT__/${UI_PORT}/g" \
   "${TPL}/.cursor/environment.json.tmpl" > "${PACK}/.cursor/environment.json"
 if [[ -d "${PACK}/jobs" ]]; then
   sed -i "s/\(\"API\", \"port\": ${API_PORT} }\)/\1,\n    { \"name\": \"Jobs\", \"port\": 3008 }/" "${PACK}/.cursor/environment.json"
@@ -50,7 +52,7 @@ while IFS= read -r line; do
   grep -qxF "${line}" "${PACK}/.gitignore" 2>/dev/null || echo "${line}" >> "${PACK}/.gitignore"
 done < "${TPL}/.gitignore"
 
-echo "Applied pack template to ${PACK} (${HANDLE}: labs ${LABS_PORT}, api ${API_PORT})"
+echo "Applied pack template to ${PACK} (${HANDLE}: ui ${UI_PORT}, api ${API_PORT})"
 
 REMOTE="$(git -C "${PACK}" remote get-url origin 2>/dev/null | sed -E 's#^(https://([^@]+@)?github\.com/|git@github\.com:)##; s#\.git/?$##; s#/$##')"
 if [[ "${REMOTE}" =~ ^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$ ]]; then

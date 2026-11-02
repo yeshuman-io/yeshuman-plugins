@@ -1,9 +1,9 @@
 """Smoke-check a deployed pack environment (Railway staging or a PR preview).
 
     uv run --with pyyaml deploy/smoke.py --api https://<handle>-api-staging.up.railway.app \
-        [--labs https://<handle>-ui-staging.up.railway.app] [--record /api/public/opportunities]
+        [--ui https://<handle>-ui-staging.up.railway.app] [--record /api/public/opportunities]
 
-Checks /api/health (healthy and bootstrapped), Labs 200, one seeds/demo.yaml login, and,
+Checks /api/health (healthy and bootstrapped), UI 200, one seeds/demo.yaml login, and,
 with --record, that a list endpoint returns at least one row. Prints codes only, never
 passwords or tokens. Exits 1 if any check fails.
 """
@@ -50,7 +50,7 @@ def demo_user() -> dict | None:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--api", required=True)
-    parser.add_argument("--labs")
+    parser.add_argument("--ui")
     parser.add_argument("--record", help="API path that lists seeded rows, e.g. /api/public/opportunities")
     args = parser.parse_args()
     api = args.api.rstrip("/")
@@ -68,9 +68,9 @@ def main() -> int:
     else:
         print("skip bootstrapped: platform does not report it yet")
 
-    if args.labs:
-        status, _ = request(args.labs.rstrip("/") + "/")
-        report("labs", status == 200, f"{status}")
+    if args.ui:
+        status, _ = request(args.ui.rstrip("/") + "/")
+        report("ui", status == 200, f"{status}")
 
     user = demo_user()
     if user:

@@ -15,7 +15,7 @@ Choose by the kind of change. If a change spans several kinds, include one piece
 
 | Change | Evidence | Minimum |
 |--------|----------|---------|
-| UI (static: copy, theme, layout, a page) | Screenshot | The changed screen at `labs_port`, logged in as the relevant persona. Include a before shot when the change is visual. |
+| UI (static: copy, theme, layout, a page) | Screenshot | The changed screen at `ui_port`, logged in as the relevant persona. Include a before shot when the change is visual. |
 | UI flow (several steps, forms, chat, navigation) | Short video | 10–60 s covering the flow from start to finished state. Add a screenshot of the end state too, because Linear shows images inline. |
 | Backend / API | Request and response, or test output | `curl -i` against the endpoint with the status line and a trimmed body, or the `pytest` summary for the touched app (the command plus the final pass/fail lines). |
 | Agent tool / chat behaviour | Transcript excerpt and screenshot | The prompt, the tool call or result, and the reply. Use the API log lines (`.platform/api/logs/<handle>.log`) if the UI does not show the tool call. |
@@ -29,9 +29,9 @@ Never include secrets, tokens, real client personal data, or full env dumps. Red
 
 Save everything under `/opt/cursor/artifacts/` (Cursor shows that folder to the user) with short descriptive names, for example `tc-123-candidate-card.png`, `tc-123-apply-flow.mp4`, `tc-123-api.txt`.
 
-- **Stack:** `bash .platform/scripts/pack_workspace/run.sh`, then open `http://localhost:<labs_port>` (ports are in `yeshuman.yaml`).
+- **Stack:** `bash .platform/scripts/pack_workspace/run.sh`, then open `http://localhost:<ui_port>` (ports are in `yeshuman.yaml`).
 - **Screenshots and video:** use the Cloud desktop through your computer-use or browser tool, and its screen recording for flows. Record only the flow, not the setup. With no desktop, a headless browser (for example `npx playwright screenshot --full-page <url> out.png`, if Playwright is installed) covers pages that need no login.
-- **API:** `curl -sS -i -X POST http://localhost:<api_port>/api/... -H 'Content-Type: application/json' -d '{...}' | tee /opt/cursor/artifacts/<id>-api.txt`. Authenticated calls use the same login as Labs. Trim large bodies with `head`.
+- **API:** `curl -sS -i -X POST http://localhost:<api_port>/api/... -H 'Content-Type: application/json' -d '{...}' | tee /opt/cursor/artifacts/<id>-api.txt`. Authenticated calls use the same login as UI. Trim large bodies with `head`.
 - **Tests:** `... pytest <path> -q 2>&1 | tail -n 30 | tee /opt/cursor/artifacts/<id>-tests.txt`.
 - **Data:** run the query through the platform's manage.py shell (`DOTENV_FILE=.env.<handle>`) or `psql` against the local tenant database, before and after, into one `.txt`.
 - **Railway:** the preview and staging URLs are in the Railway bot comment and the deployment status on the PR (`gh pr view <n> --comments`, `gh pr checks <n>`). Health: `curl -fsS https://<api-host>/health`.
@@ -69,7 +69,7 @@ The key is read from `LINEAR_API_KEY`, then `<HANDLE>_LINEAR_API_KEY` (handle fr
 ```markdown
 ## Evidence: <ISSUE-ID> — <one-line summary of what changed>
 
-**PR:** <PR URL> (head `<short sha>`) · **Preview:** <Railway preview Labs URL> · **Status:** ready for review | merged to staging
+**PR:** <PR URL> (head `<short sha>`) · **Preview:** <Railway preview UI URL> · **Status:** ready for review | merged to staging
 
 ### What shipped
 <one short paragraph of what was implemented, matching the diff; claim no more than it does>
@@ -101,7 +101,7 @@ The PR body carries the same **What shipped**, **How to verify** (identical Give
 Say so explicitly, in the comment and the PR. Do not fake it.
 
 - Never stage, mock up, edit or reuse a screenshot, log or response to stand in for one you did not capture on this change. Never describe a check you did not run as if you had run it.
-- Under **Not verified**, write what is missing and why, for example: "No screenshot: Labs failed to start (`run.sh` error in the log, excerpt attached)" or "Railway preview API failed to deploy; local verify only."
+- Under **Not verified**, write what is missing and why, for example: "No screenshot: UI failed to start (`run.sh` error in the log, excerpt attached)" or "Railway preview API failed to deploy; local verify only."
 - **Linear unreachable** (no MCP, missing key, 401, or the key cannot see the team): put the full evidence and the "How to verify" block in the PR body instead. That counts for self-merge. Embed screenshots and videos in the PR body. The Cursor PR tool uploads `<img>`/`<video>` tags that point at `/opt/cursor/artifacts/` paths; paste text evidence inline in fenced blocks. Add this line at the top of the PR body: `Linear evidence pending: <ISSUE-ID>: <reason>` (for example "<HANDLE>_LINEAR_API_KEY returns 401"). Say the same in your final report.
 - **Post later.** Once Linear access works, any agent on this pack (or a human) posts the evidence comment from the PR body using this skill. Then they replace the pending line with `Linear evidence: <comment URL>`. At the start of a run, check your own merged PRs for a pending line and clear any you can.
 - A user-visible change with no evidence anywhere (neither on the issue nor in the PR body) is not eligible for self-merge. Leave the PR open and say what is missing.

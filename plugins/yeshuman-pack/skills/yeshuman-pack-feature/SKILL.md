@@ -1,6 +1,6 @@
 ---
 name: yeshuman-pack-feature
-description: Build a feature or change inside a Yes Human tenant pack using the platform's extension points — yeshuman.yaml, config/api.json and config/ui.json, and the Django and Labs plugin contracts — then run and verify it against the read-only platform, open the PR with evidence (yeshuman-linear-evidence), and self-merge to staging only when the high-confidence bar is met. When the change renders UI, read DESIGN_SYSTEM.md and the matching PLATFORM_UI_PATTERNS.md row, match the closest existing surface, reuse platform components, and name that pattern with a screenshot in the PR. Use once yeshuman-pack-orientation has decided the work is a pack change.
+description: Build a feature or change inside a Yes Human tenant pack using the platform's extension points — yeshuman.yaml, config/api.json and config/ui.json, and the Django and UI plugin contracts — then run and verify it against the read-only platform, open the PR with evidence (yeshuman-linear-evidence), and self-merge to staging only when the high-confidence bar is met. When the change renders UI, read DESIGN_SYSTEM.md and the matching PLATFORM_UI_PATTERNS.md row, match the closest existing surface, reuse platform components, and name that pattern with a screenshot in the PR. Use once yeshuman-pack-orientation has decided the work is a pack change.
 ---
 
 # Build in a Yes Human pack
@@ -16,9 +16,9 @@ If `yeshuman-pack-orientation` reported the pack as `behind` or `mismatch` and t
 ```
 yeshuman.yaml        # handle, domain, ports, modules, plugin, seeds, services, flags, compositions
 config/api.json      # API slice: features, tool catalog, integrations
-config/ui.json       # Labs slice: theme, copy, nav, landing
+config/ui.json       # UI slice: theme, copy, nav, landing
 plugin/django/       # PLUGIN = PluginConfig(...) in __init__.py; tenant-owned apps in plugin/django/<app>/
-plugin/labs/         # register(app) in index.ts; tenant-owned pages in plugin/labs/<app>/
+plugin/ui/           # register(app) in index.ts; tenant-owned pages in plugin/ui/<app>/
 ```
 
 ## Prefer config over code
@@ -38,7 +38,7 @@ PLUGIN = PluginConfig(
     catalog={},       # tool-catalog labels
     mapper={},        # SSE write mappings
     hooks={},         # core extension points (names in .platform/api/yeshuman/extensions.py)
-    requires_product=">=2.4,<3",   # same range as requiresProduct in plugin/labs/index.ts
+    requires_product=">=2.4,<3",   # same range as requiresProduct in plugin/ui/index.ts
 )
 ```
 
@@ -48,18 +48,18 @@ Seeds are listed in `yeshuman.yaml` `seeds:`, not here.
 
 New tenant-owned models need migrations in the app's own `migrations/` folder. Generate them with the platform's manage.py pointed at this pack (`TENANT_ROOT` is set by the install).
 
-## Labs plugin — `plugin/labs/index.ts`
+## UI plugin — `plugin/ui/index.ts`
 
 ```ts
 export function register(app: YeshumanPluginApi) {
   app.routes.add({ path: '/example', element: ExamplePage })
-  app.dashboard.section('patient', 'example')   // DashboardSectionName in .platform/labs/src/plugin/types.ts
+  app.dashboard.section('patient', 'example')   // DashboardSectionName in .platform/ui/src/plugin/types.ts
   app.chrome.card({ hideDescription: true })
   app.publicShare.route({ path: '/s/:slug', element: PublicExamplePage })
 }
 ```
 
-The slots are defined by `YeshumanPluginApi` in `.platform/labs/src/plugin/types.ts`; read it for the current list. Labs builds alias `@tenant/plugin` and `@tenant/ui-config` to this pack.
+The slots are defined by `YeshumanPluginApi` in `.platform/ui/src/plugin/types.ts`; read it for the current list. UI builds alias `@tenant/plugin` and `@tenant/ui-config` to this pack.
 
 ## When the change renders UI
 
@@ -86,15 +86,15 @@ app.canvases?.register({
 - A `page` target (a route pattern; `:id` params reach the canvas) adds a launcher to that page's header and renders your `glance` under it, and `?canvas=<id>` opens it. Set `launcher: false` when the glance has its own button. An `entity` target adds a launcher wherever the platform renders `PluginCanvasLaunchers` for that kind. The current kinds and pages are listed in `.platform/docs/TENANT_REPOS.md` § Pack canvases.
 - `render` fetches its own data from your pack routes or existing platform APIs with `authorizedFetch`. Lay it out with `ArtifactCanvasBody` when `mode` is `canvas`, and as page content when `mode` is `page`.
 - Open a registered canvas from your own pages with `useOpenPluginCanvas()(id, { entity, data })`. Prefer this to calling `openCanvas` with ad hoc content when the same view is offered from more than one place.
-- Raise `requiresProduct` (in the manifest and in `plugin/labs/index.ts`) to the contract that added any target you use. A manifest the platform cannot satisfy is skipped, not an error.
+- Raise `requiresProduct` (in the manifest and in `plugin/ui/index.ts`) to the contract that added any target you use. A manifest the platform cannot satisfy is skipped, not an error.
 - Need a target the platform does not render yet (a new entity kind or row)? That is a platform request for a launcher placement, not a new slot.
 
 ## Verify
 
 1. Restart the stack: `bash .platform/scripts/pack_workspace/run.sh`.
 2. `cd .platform/cli && uv run yeshuman verify <handle>`.
-3. Labs type-check: `cd .platform/labs && pnpm type-check`.
-4. Exercise the change in the browser on `labs_port`, and capture evidence as you go (`yeshuman-linear-evidence`: screenshot or video for UI, request/response or test output for backend).
+3. UI type-check: `cd .platform/ui && pnpm type-check`.
+4. Exercise the change in the browser on `ui_port`, and capture evidence as you go (`yeshuman-linear-evidence`: screenshot or video for UI, request/response or test output for backend).
 
 ## Ship
 
@@ -120,11 +120,11 @@ You may squash-merge your own PR to `staging` only when **all** of these hold. C
 - Small: roughly 15 files and 800 changed lines or fewer, excluding tests.
 - Pack files only (`plugin/`, `config/`, `seeds/`, `yeshuman.yaml`, pack-owned skills in `.cursor/skills/<unprefixed>/`). No `.platform/`, no copied platform code, no managed files (`.cursor/*` other than pack-owned skills, `deploy/*`, `.dockerignore`, `AGENTS.md`), no edits to `yeshuman-*` skills, and no new adopted skill without approval (see Skill tiers).
 - Any platform slot it needs is already on platform `staging`. The pin covers it: either it already did, or this PR raises the floor because the feature needs it, with a `## Platform pin` section in the body saying why. A pin change with no feature need belongs in a catch-up PR instead.
-- On the final head SHA, in your Cloud environment: install, `run.sh`, `yeshuman verify <handle>`, the pack tests for touched apps (new behaviour has a test), and `pnpm type-check` plus a browser check if Labs changed.
+- On the final head SHA, in your Cloud environment: install, `run.sh`, `yeshuman verify <handle>`, the pack tests for touched apps (new behaviour has a test), and `pnpm type-check` plus a browser check if UI changed.
 - New migrations are additive, take the next number after `staging`, and no other open PR on this repo uses the same app and number.
-- The Railway PR preview is deployed on the head SHA, every service is green (api, ui, jobs if present), and `deploy/smoke.py` passes against it (health, `bootstrapped`, Labs loads, a demo login works). If PR previews do not deploy for this pack, say so in the PR and run the smoke check against `staging` after merging. A pin-only catch-up PR (`yeshuman-platform-upgrade`) may merge on its local tests while PR environments can't deploy, followed by the post-merge `staging` smoke check. Feature PRs still need the preview.
+- The Railway PR preview is deployed on the head SHA, every service is green (api, ui, jobs if present), and `deploy/smoke.py` passes against it (health, `bootstrapped`, UI loads, a demo login works). If PR previews do not deploy for this pack, say so in the PR and run the smoke check against `staging` after merging. A pin-only catch-up PR (`yeshuman-platform-upgrade`) may merge on its local tests while PR environments can't deploy, followed by the post-merge `staging` smoke check. Feature PRs still need the preview.
 - No open review or comment asks for changes or a hold.
-- User-visible change (anything a person sees or does differently in Labs, the API or agent chat): the evidence comment from `yeshuman-linear-evidence` is posted on the Linear issue for the head SHA, and the PR body has the same "How to verify" block. When the change renders UI, that evidence names the pattern followed and includes a screenshot of the rendered UI. If Linear is unreachable (no MCP, bad key), the full evidence plus "How to verify" in the PR body counts instead. The PR must state `Linear evidence pending: <issue>: <reason>`, and the evidence is posted to Linear once access works. With no Linear issue, the PR body carries the evidence. "Not verified" items are fine to list, but no evidence for the change itself blocks a self-merge.
+- User-visible change (anything a person sees or does differently in the UI, the API or agent chat): the evidence comment from `yeshuman-linear-evidence` is posted on the Linear issue for the head SHA, and the PR body has the same "How to verify" block. When the change renders UI, that evidence names the pattern followed and includes a screenshot of the rendered UI. If Linear is unreachable (no MCP, bad key), the full evidence plus "How to verify" in the PR body counts instead. The PR must state `Linear evidence pending: <issue>: <reason>`, and the evidence is posted to Linear once access works. With no Linear issue, the PR body carries the evidence. "Not verified" items are fine to list, but no evidence for the change itself blocks a self-merge.
 
 **Squash only.** Merge with `gh pr merge <n> --squash`, or through the API with `merge_method=squash`. The PR title becomes the commit title. Never use a merge commit or a rebase merge; `staging` history stays one commit per PR.
 

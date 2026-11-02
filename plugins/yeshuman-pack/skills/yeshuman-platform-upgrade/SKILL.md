@@ -5,7 +5,7 @@ description: Catch a Yes Human tenant pack up to the latest platform minor in it
 
 # Catch up with the platform
 
-The platform's version is its **product contract** (`PRODUCT_CONTRACT_VERSION`, semver). A pack pins it twice: `requires_product` in its Django `PLUGIN` and `requiresProduct` in `plugin/labs/index.ts`. The floor of that range is the last minor the pack was tested on.
+The platform's version is its **product contract** (`PRODUCT_CONTRACT_VERSION`, semver). A pack pins it twice: `requires_product` in its Django `PLUGIN` and `requiresProduct` in `plugin/ui/index.ts`. The floor of that range is the last minor the pack was tested on.
 
 Minor versions are backward compatible, so a pack on `>=2.2,<3` already *runs* on 2.4: every install clones the tip of the platform branch. Catching up means proving that with tests and raising the floor so the pin says so. Merging also redeploys the pack's Railway `staging` onto the latest platform, which otherwise only happens on the pack's next merge.
 
@@ -40,7 +40,7 @@ A pure catch-up (nothing in your task needs the newer version) never rides in a 
    - `cd .platform/cli && uv run yeshuman verify <handle>`
    - `cd .platform/cli && uv run yeshuman test <handle> --pack` (the pack's own tests)
    - `rg -i 'deprecat' .platform/api/logs/<handle>.log` (list any hits in the PR)
-   - Open Labs on `labs_port` and log in. If the pack has Labs pages, open one.
+   - Open UI on `ui_port` and log in. If the pack has UI pages, open one.
 5. Open the PR against `staging`, titled `Platform catch-up: require product X.Y`. The body gives the old and new pins, the changelog rows covered, the commands and their results, any deprecation hits, and the Railway preview link. There is no Linear issue and no user-visible change, so the evidence is the test output in the body.
 
 ## 3. Merge
