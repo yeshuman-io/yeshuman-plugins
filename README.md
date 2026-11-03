@@ -49,4 +49,4 @@ Cursor picks up a moved tag on the next environment build.
 
 ## Contributing
 
-This repo is public. It holds generic guidance only: no tenant names, credentials or deployment details. `scripts/check_no_client_names.sh` enforces the first of those against Yes Human's private fleet list.
+This repo is public. It holds generic guidance only: no tenant names, no people's names (name the role, such as "platform owner" or "tenant owner"), no credentials or deployment details. `scripts/check_no_client_names.sh` and `scripts/check_no_people_names.sh` enforce the first two against Yes Human's private fleet list.
