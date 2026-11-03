@@ -98,7 +98,7 @@ Abstraction: (catalogue nouns; cite decision IDs and platform docs)
 New nouns: none | <name> (why no existing noun fits; approved by)
 Configurable: DB-authored / config / code contract / model-led
 Rejected shortcut:
-Status: proposed | accepted by <name> <date> | accepted_shortcut (debt: ...) | superseded by D-<n>
+Status: proposed | accepted by <name or role> <date> | accepted_shortcut (debt: ...) | superseded by D-<n>
 Mode: plan only | build approved | platform request | design review
 Links: issue, thread, PR
 ```
@@ -106,6 +106,14 @@ Links: issue, thread, PR
 `docs/ontology/decisions.md` is append-only: one `## D-<n> <title>` entry per
 decision, newest last. Change a decision by adding a new entry that supersedes
 it, and mark the old one `superseded by D-<n>`.
+
+## Names
+
+Platform and plugin files (this skill, the pack template, platform docs) name
+roles, such as "platform owner" or "tenant owner", never people. A pack's
+decision log (`docs/ontology/decisions.md`) and PR descriptions may name people
+who are known co-authors, for example `accepted by <name> <date>`. When unsure
+whether someone is a known co-author, write the role.
 
 ## No abstraction fits
 
