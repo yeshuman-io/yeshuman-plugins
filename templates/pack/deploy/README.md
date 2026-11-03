@@ -28,7 +28,7 @@ Production keeps branded hosts, and adds them alongside the references elsewhere
 
 ```bash
 uv run --with pyyaml deploy/smoke.py --api https://<handle>-api-staging.up.railway.app \
-  --labs https://<handle>-ui-staging.up.railway.app
+  --ui https://<handle>-ui-staging.up.railway.app
 ```
 
-This checks health, `bootstrapped`, Labs, and one demo login. A pack with a jobs board adds `--record /api/public/opportunities`. Use the PR environment's URLs from the Railway PR comment for a preview.
+This checks health, `bootstrapped`, UI, and one demo login. A pack with a jobs board adds `--record /api/public/opportunities`. Use the PR environment's URLs from the Railway PR comment for a preview.

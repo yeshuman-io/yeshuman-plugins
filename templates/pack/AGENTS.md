@@ -1,6 +1,6 @@
 # Yes Human pack
 
-This repo is a **tenant pack** for the Yes Human platform: this tenant's config, theme, seeds and plugins. The platform (Django API + Labs UI) is a separate repo, checked out **read-only** at `.platform/` by `.cursor/install.sh`.
+This repo is a **tenant pack** for the Yes Human platform: this tenant's config, theme, seeds and plugins. The platform (Django API + UI) is a separate repo, checked out **read-only** at `.platform/` by `.cursor/install.sh`.
 
 ## Before you start
 
@@ -32,7 +32,7 @@ If your work is tied to a Linear issue, post evidence on that issue and put the 
 ## Run it
 
 - Install (Cursor Cloud does this on boot): `bash .cursor/install.sh`
-- Start API + Labs: `bash .platform/scripts/pack_workspace/run.sh`
+- Start API + UI: `bash .platform/scripts/pack_workspace/run.sh`
 - Ports and handle are in `yeshuman.yaml`. Default login: `cloud@yeshuman.local` / `clouddev` unless `YESHUMAN_SEED_DEPLOYMENT_USERS` is set.
 - Logs: `.platform/api/logs/<handle>.log`
 
@@ -41,7 +41,7 @@ If your work is tied to a Linear issue, post evidence on that issue and put the 
 - `yeshuman.yaml` — handle, ports, modules, seeds, flags.
 - `config/api.json`, `config/ui.json` — tenant config (features, copy, theme, nav).
 - `plugin/django/` — tenant-owned Django apps (`PLUGIN` in `__init__.py`). Import platform symbols from `yeshuman.sdk` only.
-- `plugin/labs/` — tenant-owned Labs routes, nav and components (`index.ts`). Import platform symbols from `@yeshuman/sdk` only.
+- `plugin/ui/` — tenant-owned UI routes, nav and components (`index.ts`). Import platform symbols from `@yeshuman/sdk` only.
 - `seeds/` — demo users and other pack-owned seed files. Manifest `seeds:` is the command list.
 
 ## Pack or platform?

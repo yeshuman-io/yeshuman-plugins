@@ -17,7 +17,7 @@ The platform is one codebase serving many tenants. It loads exactly one pack at 
 ## Install and run
 
 1. `bash .cursor/install.sh` — clones the platform at `YESHUMAN_PLATFORM_REF` (default `master`) into `.platform/` using `YESHUMAN_PLATFORM_TOKEN`, then installs dependencies, the database and seeds for this pack's handle. Cursor Cloud runs this on boot.
-2. `bash .platform/scripts/pack_workspace/run.sh` — starts API and Labs. Ports are `api_port` / `labs_port` in `yeshuman.yaml`.
+2. `bash .platform/scripts/pack_workspace/run.sh` — starts API and UI. Ports are `api_port` / `ui_port` in `yeshuman.yaml`.
 3. Check: `cd .platform/cli && uv run yeshuman verify <handle>`. Logs: `.platform/api/logs/<handle>.log`.
 
 Default login is `cloud@yeshuman.local` / `clouddev` unless `YESHUMAN_SEED_DEPLOYMENT_USERS` is set.
@@ -40,15 +40,15 @@ If the script is not in `.platform/`, the platform ref predates it: note that an
 
 ## Browser checks and Railway
 
-- Computer use is not reliably available in Cloud. If it is missing or capped, drive the browser with a script instead: Puppeteer or Playwright from Node (`npx -y puppeteer` / `npx -y playwright` against `http://localhost:<labs_port>`), or Chrome DevTools Protocol. Save screenshots as evidence (`yeshuman-linear-evidence`).
-- Never use Railway MCP, the Railway CLI with account tokens, or `railway variable list`. Read deploys from Railway's comments and commit statuses on the PR, and check the deployed URLs with `uv run --with pyyaml deploy/smoke.py --api <api-url> --labs <ui-url>` (health, `bootstrapped`, Labs, one demo login).
+- Computer use is not reliably available in Cloud. If it is missing or capped, drive the browser with a script instead: Puppeteer or Playwright from Node (`npx -y puppeteer` / `npx -y playwright` against `http://localhost:<ui_port>`), or Chrome DevTools Protocol. Save screenshots as evidence (`yeshuman-linear-evidence`).
+- Never use Railway MCP, the Railway CLI with account tokens, or `railway variable list`. Read deploys from Railway's comments and commit statuses on the PR, and check the deployed URLs with `uv run --with pyyaml deploy/smoke.py --api <api-url> --ui <ui-url>` (health, `bootstrapped`, UI, one demo login).
 - `seeds/demo.yaml` users exist on staging and PR environments, never in production. Their passwords are committed, so do not add real stakeholder accounts there for production use.
 
 ## Pack or platform?
 
 Ask: can this be done with what the platform already exposes?
 
-- **Pack change** — copy, theme, nav, feature flags, landing (`config/ui.json`); tool catalog, features, integrations settings (`config/api.json`); modules, seeds, compositions (`yeshuman.yaml`); tenant-owned Django apps and Labs pages through the plugin slots (`plugin/`). Build it here, run it, open a PR on this repo. Use `yeshuman-pack-feature`.
+- **Pack change** — copy, theme, nav, feature flags, landing (`config/ui.json`); tool catalog, features, integrations settings (`config/api.json`); modules, seeds, compositions (`yeshuman.yaml`); tenant-owned Django apps and UI pages through the plugin slots (`plugin/`). Build it here, run it, open a PR on this repo. Use `yeshuman-pack-feature`.
 - **Platform change** — needs a new extension point, a new config key the platform does not read, a change to shared behaviour, a shared model or API, or a bug in platform code. Do not edit `.platform/` for real. Use `yeshuman-platform-request`.
 - **Both** — build the pack part now; raise a platform request for the missing piece and say in the pack PR what it waits on.
 
