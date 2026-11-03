@@ -5,7 +5,8 @@ description: >
   vs platform, where the change lives, then a real plan in chat. Use when
   Linear issues are scant or empty, when grooming Backlog/Todo, when asked to
   plan-to-make-a-plan or “plan this”, when picking an issue, or until the user
-  explicitly asks to implement. Do not invent a spec or dump Goal/Scope into
+  explicitly asks to implement. Hands new nouns, tables, config keys and
+  hardcoded lists to yeshuman-ontology-steward for a design record. Do not invent a spec or dump Goal/Scope into
   Linear. Slash command: /yeshuman-plan-to-make-a-plan.
 ---
 
@@ -81,6 +82,8 @@ locate the work in **this** repo and the read-only platform checkout:
 - Pack: `yeshuman.yaml`, `config/`, `plugin/`, `seeds/`
 - Platform (read-only): `.platform/` — similar features, slots, existing
   behaviour. Use `yeshuman-pack-orientation` for the split.
+- Ontology: `docs/ontology/decisions.md` and `docs/ontology/vocabulary.md` in
+  the pack, and `.platform/docs/ONTOLOGY_DOC_MAP.md` for the platform nouns.
 
 Ask which Linear issue if the request is vague. Cover nearby code and prior
 art before proposing a plan.
@@ -110,7 +113,13 @@ platform `ui-ux-application-planning` when that skill is in context.
 **Agent path** — tools, streaming, cache, artifacts, if the feature is
 agent-interactive.
 
-**API / server** — routes, models, jobs, permissions, data contracts.
+**Ontology** — which existing abstraction is this? Map the stakeholder's words
+onto platform nouns before naming any model, app, classifier profile, config
+key or hardcoded list: run `yeshuman-ontology-steward`, and treat a new table
+named after a screen or a stakeholder word as the shortcut to avoid.
+
+**API / server** — routes, jobs, permissions, data contracts on the nouns the
+Ontology bucket settled.
 
 **Tenant config** — `config/api.json`, `config/ui.json`, flags, seeds; local
 vs Railway staging vs production.
@@ -122,6 +131,9 @@ mode** for a larger slice). The plan should name:
 
 - The issue as `ABC-123 — summary`
 - Pack vs platform and file/module targets
+- The design record from `yeshuman-ontology-steward` (status `proposed` until
+  the user accepts it) whenever the plan adds a noun, table, config key or
+  hardcoded list
 - Open questions that would block Todo
 - What would be in Linear if they want a light update
 - Explicit next step: stay planning, move to Todo, or (only if they asked)
@@ -139,4 +151,5 @@ skill.
   `.cursor/Dockerfile`
 - Editing any `yeshuman-*` skill in the pack, including this one
 - Skipping the tenant-vs-shared / pack-vs-platform question
+- Asking “what models do we need?” before “which existing abstraction is this?”
 - Jumping to code when they said plan, pick, groom, or discover

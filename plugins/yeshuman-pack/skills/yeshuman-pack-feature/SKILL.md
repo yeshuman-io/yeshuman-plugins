@@ -1,9 +1,13 @@
 ---
 name: yeshuman-pack-feature
-description: Build a feature or change inside a Yes Human tenant pack using the platform's extension points — yeshuman.yaml, config/api.json and config/ui.json, and the Django and UI plugin contracts — then run and verify it against the read-only platform, open the PR with evidence (yeshuman-linear-evidence), and self-merge to staging only when the high-confidence bar is met. When the change renders UI, read DESIGN_SYSTEM.md and the matching PLATFORM_UI_PATTERNS.md row, match the closest existing surface, reuse platform components, and name that pattern with a screenshot in the PR. Use once yeshuman-pack-orientation has decided the work is a pack change.
+description: Build a feature or change inside a Yes Human tenant pack using the platform's extension points — yeshuman.yaml, config/api.json and config/ui.json, and the Django and UI plugin contracts — then run and verify it against the read-only platform, open the PR with evidence (yeshuman-linear-evidence), and self-merge to staging only when the high-confidence bar is met. When the change renders UI, read DESIGN_SYSTEM.md and the matching PLATFORM_UI_PATTERNS.md row, match the closest existing surface, reuse platform components, and name that pattern with a screenshot in the PR. A new model, app, migration, classifier profile, config key, hardcoded list or UI noun first goes through yeshuman-ontology-steward and needs a design record. Use once yeshuman-pack-orientation has decided the work is a pack change.
 ---
 
 # Build in a Yes Human pack
+
+## Before you start: design record
+
+If the change adds a model, app or migration, a classifier profile, a config key, a hardcoded list or copy in code, a `plugin/shared` spec, an agent tool, or a new UI noun, run `yeshuman-ontology-steward` first. Build only from a design record with status `accepted` or `accepted_shortcut` in `docs/ontology/decisions.md` (or one handed to you in the kickoff, which you then append there). With no record, or one still `proposed`, stay in plan mode and say what is missing.
 
 ## Before you start: the platform pin
 
@@ -24,6 +28,8 @@ plugin/ui/           # register(app) in index.ts; tenant-owned pages in plugin/u
 ## Prefer config over code
 
 Theme, copy, nav, landing content and feature flags are **config**. Reach for `plugin/` only when config cannot express the change.
+
+Word lists, regexes, screen enums and user-facing copy are data (a database-authored standard or `config/ui.json`), not code. A `features.*` key must be read by something (`feature_enabled` / `feature_config` or pack code); do not add config nothing reads.
 
 ## Django plugin — `plugin/django/__init__.py`
 
@@ -46,7 +52,7 @@ When the change adds or edits agent tools, follow `yeshuman-pack-tools`.
 
 Seeds are listed in `yeshuman.yaml` `seeds:`, not here.
 
-New tenant-owned models need migrations in the app's own `migrations/` folder. Generate them with the platform's manage.py pointed at this pack (`TENANT_ROOT` is set by the install).
+A new model, app or classifier profile needs an accepted design record (`yeshuman-ontology-steward`) that says why no platform noun fits; a table named after a screen or a stakeholder word is the shortcut to avoid. Then put its migrations in the app's own `migrations/` folder. Generate them with the platform's manage.py pointed at this pack (`TENANT_ROOT` is set by the install).
 
 ## UI plugin — `plugin/ui/index.ts`
 
@@ -98,7 +104,7 @@ app.canvases?.register({
 
 ## Ship
 
-Commit only pack files (`.platform/` is git-ignored). Open a PR against `staging` describing the change, how you verified it (commands and results), the Railway preview link, and any platform request it depends on. Include the Given/When/Then "How to verify" block from `yeshuman-linear-evidence`. If the work is tied to a Linear issue, post the evidence comment on the issue too. When the change renders UI, the PR body names the pattern followed and includes a screenshot of the rendered UI.
+Commit only pack files (`.platform/` is git-ignored). Open a PR against `staging` describing the change, how you verified it (commands and results), the Railway preview link, and any platform request it depends on. Include the Given/When/Then "How to verify" block from `yeshuman-linear-evidence`, and fill the `## Design record` section from `.github/pull_request_template.md` (or write "No new nouns" when the steward did not apply). If the work is tied to a Linear issue, post the evidence comment on the issue too. When the change renders UI, the PR body names the pattern followed and includes a screenshot of the rendered UI.
 
 ## Skill tiers
 
@@ -118,12 +124,13 @@ You may squash-merge your own PR to `staging` only when **all** of these hold. C
 
 - Base is `staging`; the branch is cut from current `staging` with no unmerged parent PR (not stacked); the PR is not draft.
 - Small: roughly 15 files and 800 changed lines or fewer, excluding tests.
-- Pack files only (`plugin/`, `config/`, `seeds/`, `yeshuman.yaml`, pack-owned skills in `.cursor/skills/<unprefixed>/`). No `.platform/`, no copied platform code, no managed files (`.cursor/*` other than pack-owned skills, `deploy/*`, `.dockerignore`, `AGENTS.md`), no edits to `yeshuman-*` skills, and no new adopted skill without approval (see Skill tiers).
+- Pack files only (`plugin/`, `config/`, `seeds/`, `yeshuman.yaml`, `docs/ontology/`, pack-owned skills in `.cursor/skills/<unprefixed>/`). No `.platform/`, no copied platform code, no managed files (`.cursor/*` other than pack-owned skills, `deploy/*`, `.dockerignore`, `AGENTS.md`, `CLAUDE.md`, `.github/ISSUE_TEMPLATE/*`, `.github/pull_request_template.md`), no edits to `yeshuman-*` skills, and no new adopted skill without approval (see Skill tiers).
 - Any platform slot it needs is already on platform `staging`. The pin covers it: either it already did, or this PR raises the floor because the feature needs it, with a `## Platform pin` section in the body saying why. A pin change with no feature need belongs in a catch-up PR instead.
 - On the final head SHA, in your Cloud environment: install, `run.sh`, `yeshuman verify <handle>`, the pack tests for touched apps (new behaviour has a test), and `pnpm type-check` plus a browser check if UI changed.
 - New migrations are additive, take the next number after `staging`, and no other open PR on this repo uses the same app and number.
 - The Railway PR preview is deployed on the head SHA, every service is green (api, ui, jobs if present), and `deploy/smoke.py` passes against it (health, `bootstrapped`, UI loads, a demo login works). If PR previews do not deploy for this pack, say so in the PR and run the smoke check against `staging` after merging. A pin-only catch-up PR (`yeshuman-platform-upgrade`) may merge on its local tests while PR environments can't deploy, followed by the post-merge `staging` smoke check. Feature PRs still need the preview.
 - No open review or comment asks for changes or a hold.
+- The PR body has a `## Design record` section. Any new model, app, migration, classifier profile, config key or hardcoded list cites a decision in `docs/ontology/decisions.md` with status `accepted` or `accepted_shortcut`; a `proposed` record means leave the PR open.
 - User-visible change (anything a person sees or does differently in the UI, the API or agent chat): the evidence comment from `yeshuman-linear-evidence` is posted on the Linear issue for the head SHA, and the PR body has the same "How to verify" block. When the change renders UI, that evidence names the pattern followed and includes a screenshot of the rendered UI. If Linear is unreachable (no MCP, bad key), the full evidence plus "How to verify" in the PR body counts instead. The PR must state `Linear evidence pending: <issue>: <reason>`, and the evidence is posted to Linear once access works. With no Linear issue, the PR body carries the evidence. "Not verified" items are fine to list, but no evidence for the change itself blocks a self-merge.
 
 **Squash only.** Merge with `gh pr merge <n> --squash`, or through the API with `merge_method=squash`. The PR title becomes the commit title. Never use a merge commit or a rebase merge; `staging` history stays one commit per PR.
