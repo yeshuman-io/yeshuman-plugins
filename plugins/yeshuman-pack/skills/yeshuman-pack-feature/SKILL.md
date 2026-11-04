@@ -120,7 +120,9 @@ A pack-owned skill must not duplicate or override a `yeshuman-*` skill. Extend i
 
 ## Merge
 
-You may squash-merge your own PR to `staging` only when **all** of these hold. CI is not required; your own runs are the evidence. Never merge or push to `master`: promotion to production is done by Yes Human's fleet coordinator, not by implementer agents.
+You may squash-merge your own PR to `staging` only when **all** of these hold. CI is not required; your own runs are the evidence.
+
+**`master` is production, and you never touch it.** Do not open a PR into `master`, merge to it, push to it or cherry-pick onto it, even when asked to "promote" or "release". Promotion is not a PR: Yes Human fast-forwards `master` to a `staging` commit that Railway staging has already built, using the ops promote tool. A hotfix is a normal PR into `staging`. If someone asks you to promote, say that it is a Yes Human step and leave it there. If a PR you find is based on `master`, retarget it to `staging` or leave a comment. Rule: platform `docs/TENANT_REPOS.md` § Promotion.
 
 - Base is `staging`; the branch is cut from current `staging` with no unmerged parent PR (not stacked); the PR is not draft.
 - Small: roughly 15 files and 800 changed lines or fewer, excluding tests.

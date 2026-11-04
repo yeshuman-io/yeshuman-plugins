@@ -4,7 +4,7 @@ This repo is a **tenant pack** for the Yes Human platform: this tenant's config,
 
 ## Before you start
 
-This repo's default branch is the working base; do not look for another base branch. While it is `staging`, that is pre-production: Railway staging and Cursor Cloud build from it, and `master` is production, promoted from `staging` by Yes Human. Open PRs against `staging`. You may merge your own PR to `staging` when it meets the high-confidence bar in `yeshuman-pack-feature` (Merge); otherwise leave it open for Yes Human. Squash merges only (`gh pr merge --squash` or API `merge_method=squash`), never a merge commit or a rebase. Never merge or push to `master`; Yes Human promotes.__ORIGIN_WORKFLOW__
+This repo's default branch is the working base; do not look for another base branch. While it is `staging`, that is pre-production: Railway staging and Cursor Cloud build from it, and `master` is production, promoted from `staging` by Yes Human. Open PRs against `staging`. You may merge your own PR to `staging` when it meets the high-confidence bar in `yeshuman-pack-feature` (Merge); otherwise leave it open for Yes Human. Squash merges only (`gh pr merge --squash` or API `merge_method=squash`), never a merge commit or a rebase. Never open a PR into `master`, merge to it or push to it. Promotion is not a PR: Yes Human fast-forwards `master` to a tested `staging` commit (platform `docs/TENANT_REPOS.md` § Promotion).__ORIGIN_WORKFLOW__
 
 Cursor Cloud secrets this workspace needs (set on the team or this environment):
 
