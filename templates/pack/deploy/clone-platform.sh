@@ -27,6 +27,21 @@ fi
 echo "==> clone ${repo}@${ref} -> ${dest}"
 git clone --depth 1 --branch "${ref}" "${url}" "${dest}"
 git -C "${dest}" log -1 --format='==> platform %h %s'
+
+# Public SHAs only, written before .git is removed. /api/health reads this file.
+# A non-hex value (a token, a branch name) is stored as JSON null.
+json_sha() {
+  case "$1" in
+    ''|*[!0-9a-fA-F]*) printf 'null' ;;
+    *) printf '"%s"' "$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')" ;;
+  esac
+}
+platform_sha="$(git -C "${dest}" rev-parse HEAD)"
+mkdir -p "${dest}/api/yeshuman"
+printf '{"platform_commit":%s,"pack_commit":%s}\n' \
+  "$(json_sha "${platform_sha}")" "$(json_sha "${RAILWAY_GIT_COMMIT_SHA:-}")" \
+  > "${dest}/api/yeshuman/build-revision.json"
+
 rm -rf "${dest}/.git"
 [ -n "${keyfile}" ] && rm -f "${keyfile}"
 exit 0
