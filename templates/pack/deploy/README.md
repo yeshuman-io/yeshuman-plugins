@@ -18,7 +18,7 @@ Railway reads only a root `railway.toml` unless a service's **Config file path**
 2. `deploy/platform-ref` (first non-comment line). This is **production's pin**: a `prod/<UTC>` tag that `yeshuman-ops` `scripts/promote.py platform` created. Production services leave `YESHUMAN_PLATFORM_REF` unset so this file decides.
 3. `master`, when neither is set.
 
-Moving production to a newer platform is a pack change: a PR to `staging` that edits only `deploy/platform-ref` (`promote.py --pin <handle>` opens it), then the usual promote. The pack code and the platform version reach production together, and promoting the platform moves no tenant. `deploy/platform-ref` is the pack's own file: template refreshes create it when missing and never overwrite it.
+Moving production to a newer platform is a pack change: a PR to `staging` that edits only `deploy/platform-ref` (`yeshuman-ops` `scripts/pin_platform.py <handle>` opens it), then the usual promote. The pack code and the platform version reach production together, and promoting the platform moves no tenant. `deploy/platform-ref` is the pack's own file: template refreshes create it when missing and never overwrite it.
 
 ## Seeding by environment
 
