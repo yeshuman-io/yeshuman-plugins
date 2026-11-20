@@ -1,0 +1,22 @@
+---
+description: Pack agent capabilities are declared domain actions (.platform/docs/AGENT_ACTIONS.md)
+globs: ["**/actions.py", "**/facts.py", "**/config/api.json", "**/config/ui.json"]
+alwaysApply: false
+---
+
+# Agent actions
+
+- Declare agent capabilities in `plugin/django/<app>/actions.py` with `domain()` and `@action`,
+  listed in `PLUGIN.actions`; never write a `tools.py`, a `BaseTool` subclass or a `@tool`
+  function. Skill: `yeshuman-agent-actions`.
+- Domain nouns come from the app's models (`NOUNS`) or ontology nouns, never screen labels or
+  scope words (`lexicon`, `system`, `admin`, `manage`, `identity`, …). A pack never redeclares a
+  core noun.
+- Every action declares `kind` (READ / WRITE / DESTRUCTIVE / UI), a typed input and a typed result,
+  and returns `ActionResult` with `entities` for what it changed.
+- Inputs never carry the acting context (`user_id`, `thread_id`, `focus`, `current_route`,
+  `organisation_slug`, …): use `ctx`.
+- Prompts, facts hints and config reference capabilities as `domain.action`, never a rendered
+  tool name.
+- Run the pack tests (`check_actions` in `plugin/django/tests/test_agent_actions.py`, and
+  `plugin/django/tests/test_terminology.py`) before committing.

@@ -32,7 +32,7 @@ Run before code when the work would add or change any of:
 4. a hardcoded list (regexes, word lists, enums of screens or surfaces) or user-facing copy in Python or TypeScript
 5. a JSON spec under `plugin/shared/` that drives behaviour
 6. a new UI noun (nav item, page title, route segment) the schema doesn't name
-7. a new agent tool `manage_<noun>`
+7. a new agent domain or action in `actions.py` (`yeshuman-agent-actions`)
 8. a request in product words with no record named
 
 Skip it for copy-only `config/ui.json` changes, bug fixes that add no noun, and
