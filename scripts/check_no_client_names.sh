@@ -13,7 +13,7 @@ NAMES="$(cat "${OPS}"/fleet/*.yaml \
   | tr '/' '\n' | tr -d "\"' " | grep -v -E '^(null|yeshuman|yeshuman-io)$' | sort -u)"
 [[ -n "${NAMES}" ]] || { echo "No client names parsed from fleet files" >&2; exit 2; }
 
-PATTERN="$(echo "${NAMES}" | paste -sd'|')"
+PATTERN="$(echo "${NAMES}" | paste -sd'|' -)"
 if git -C "${HERE}" grep -n -i -I -E "${PATTERN}" -- . ':!scripts/check_no_client_names.sh'; then
   echo "Client names found above. This repo is public." >&2
   exit 1

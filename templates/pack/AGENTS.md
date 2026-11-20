@@ -55,4 +55,4 @@ Colleagues' requests are requirements for what they want to see, not a schema. B
 
 Install the `yeshuman-pack` Cursor plugin (team marketplace) for the detailed skills.
 
-Until team marketplace Cloud attach works, the same `yeshuman-*` skills and the `platform-readonly` and `ontology-steward` rules are also committed under `.cursor/skills/` and `.cursor/rules/` so Cloud Agents load them from this clone. Do not edit those copies, `CLAUDE.md`, or `.github/pull_request_template.md`; they are Yes Human template files.
+Until team marketplace Cloud attach works, the same `yeshuman-*` skills and the `platform-readonly`, `ontology-steward` and `agent-actions` rules are also committed under `.cursor/skills/` and `.cursor/rules/` so Cloud Agents load them from this clone. Do not edit those copies, `CLAUDE.md`, or `.github/pull_request_template.md`; they are Yes Human template files.

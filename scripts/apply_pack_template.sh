@@ -28,6 +28,10 @@ chmod +x "${PACK}/.cursor/install.sh"
 # Interim until team marketplace Cloud attach works: Cloud Agents load
 # project skills/rules from the pack clone (.cursor/skills, .cursor/rules).
 # Do not clone the plugin in install.sh / Dockerfile / environment.json.
+# Yes Human skills retired from the template: remove the pack's managed copy.
+for retired in yeshuman-pack-tools; do
+  rm -rf "${PACK}/.cursor/skills/${retired}"
+done
 if [[ -d "${TPL}/.cursor/skills" ]]; then
   mkdir -p "${PACK}/.cursor/skills"
   cp -R "${TPL}/.cursor/skills/." "${PACK}/.cursor/skills/"
@@ -49,12 +53,13 @@ if [ ! -f "${PACK}/deploy/platform-ref" ]; then
     "master" > "${PACK}/deploy/platform-ref"
 fi
 HANDLE_ENV="$(printf '%s' "${HANDLE}" | tr '[:lower:]-' '[:upper:]_')"
-sed -i "s/__HANDLE_ENV__/${HANDLE_ENV}/g" "${PACK}/deploy/ui.Dockerfile"
+# perl -pi behaves the same on GNU and BSD (macOS); sed -i does not.
+perl -pi -e "s/__HANDLE_ENV__/${HANDLE_ENV}/g" "${PACK}/deploy/ui.Dockerfile"
 cp "${TPL}/.dockerignore" "${PACK}/.dockerignore"
 sed -e "s/__HANDLE__/${HANDLE}/g" -e "s/__API_PORT__/${API_PORT}/g" -e "s/__UI_PORT__/${UI_PORT}/g" \
   "${TPL}/.cursor/environment.json.tmpl" > "${PACK}/.cursor/environment.json"
 if [[ -d "${PACK}/jobs" ]]; then
-  sed -i "s/\(\"API\", \"port\": ${API_PORT} }\)/\1,\n    { \"name\": \"Jobs\", \"port\": 3008 }/" "${PACK}/.cursor/environment.json"
+  perl -pi -e "s/(\"API\", \"port\": ${API_PORT} \})/\$1,\n    { \"name\": \"Jobs\", \"port\": 3008 }/" "${PACK}/.cursor/environment.json"
 fi
 while IFS= read -r line; do
   grep -qxF "${line}" "${PACK}/.gitignore" 2>/dev/null || echo "${line}" >> "${PACK}/.gitignore"

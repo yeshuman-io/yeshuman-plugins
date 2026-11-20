@@ -16,7 +16,7 @@ NAMES="$(cat "${OPS}"/fleet/*.yaml \
   | grep -v -E '^(|null|yeshuman|yeshuman-io)$' | sort -u)"
 [[ -n "${NAMES}" ]] || { echo "No people names parsed from fleet files" >&2; exit 2; }
 
-PATTERN="$(echo "${NAMES}" | sed 's/[.[\*^$()+?{|]/\\&/g' | paste -sd'|')"
+PATTERN="$(echo "${NAMES}" | sed 's/[.[\*^$()+?{|]/\\&/g' | paste -sd'|' -)"
 if git -C "${HERE}" grep -n -i -I -w -E "${PATTERN}" -- . ':!scripts/check_no_people_names.sh'; then
   echo "People's names found above. Name the role (platform owner, tenant owner) instead." >&2
   exit 1

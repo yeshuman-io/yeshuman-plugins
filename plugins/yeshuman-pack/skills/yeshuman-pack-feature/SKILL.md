@@ -19,7 +19,7 @@ If `yeshuman-pack-orientation` reported the pack as `behind` or `mismatch` and t
 
 ```
 yeshuman.yaml        # handle, domain, ports, modules, plugin, seeds, services, flags, compositions
-config/api.json      # API slice: features, tool catalog, integrations
+config/api.json      # API slice: features, prompts, integrations
 config/ui.json       # UI slice: theme, copy, nav, landing
 plugin/django/       # PLUGIN = PluginConfig(...) in __init__.py; tenant-owned apps in plugin/django/<app>/
 plugin/ui/           # register(app) in index.ts; tenant-owned pages in plugin/ui/<app>/
@@ -39,16 +39,15 @@ from yeshuman.sdk import PluginConfig
 PLUGIN = PluginConfig(
     apps=(),          # extra INSTALLED_APPS (tenant-owned apps under plugin/django/<app>/)
     routers=(),       # Ninja routers mounted by the host
-    tools={},         # { focus: [tool, ...] } agent tools
-    facts=(),         # chat-suggestion providers
-    catalog={},       # tool-catalog labels
-    mapper={},        # SSE write mappings
+    actions=(),       # dotted modules that declare agent actions ("<app>.actions")
+    foci={},          # core domain -> { focus: scope }, to give a core domain to a pack focus
+    facts=(),         # chat-suggestion and MCP resource providers
     hooks={},         # core extension points (names in .platform/api/yeshuman/extensions.py)
-    requires_product=">=2.4,<3",   # same range as requiresProduct in plugin/ui/index.ts
+    requires_product=">=4.0,<5",   # contract floor and ceiling; see yeshuman-platform-upgrade
 )
 ```
 
-When the change adds or edits agent tools, follow `yeshuman-pack-tools`.
+When the change adds or edits an agent capability, follow `yeshuman-agent-actions`: declared domain actions in `plugin/django/<app>/actions.py`, never a hand-written tool.
 
 Seeds are listed in `yeshuman.yaml` `seeds:`, not here.
 
