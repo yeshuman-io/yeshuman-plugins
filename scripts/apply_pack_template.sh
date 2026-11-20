@@ -42,6 +42,12 @@ cp "${TPL}/.github/ISSUE_TEMPLATE/"* "${PACK}/.github/ISSUE_TEMPLATE/"
 cp "${TPL}/.github/pull_request_template.md" "${PACK}/.github/pull_request_template.md"
 mkdir -p "${PACK}/deploy"
 find "${TPL}/deploy" -maxdepth 1 -type f -exec cp {} "${PACK}/deploy/" \;
+# The production platform pin is the pack's own (moved by yeshuman-ops promote.py --pin): create it, never overwrite it.
+if [ ! -f "${PACK}/deploy/platform-ref" ]; then
+  printf '%s\n' "# Platform ref production builds clone: a prod/<UTC> tag from yeshuman-ops scripts/promote.py." \
+    "# Staging ignores it (YESHUMAN_PLATFORM_REF=staging). Change it only in a platform pin PR, not in a feature PR." \
+    "master" > "${PACK}/deploy/platform-ref"
+fi
 HANDLE_ENV="$(printf '%s' "${HANDLE}" | tr '[:lower:]-' '[:upper:]_')"
 sed -i "s/__HANDLE_ENV__/${HANDLE_ENV}/g" "${PACK}/deploy/ui.Dockerfile"
 cp "${TPL}/.dockerignore" "${PACK}/.dockerignore"

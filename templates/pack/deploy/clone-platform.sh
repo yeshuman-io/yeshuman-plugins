@@ -1,11 +1,26 @@
 #!/bin/sh
-# Railway build: clone the Yes Human platform at YESHUMAN_PLATFORM_REF into <dest>.
+# Railway build: clone the Yes Human platform into <dest>.
+# Usage: clone-platform.sh <dest> [<ref file>]
+# Ref, first match wins:
+#   1. YESHUMAN_PLATFORM_REF (build variable; every staging service sets it to "staging")
+#   2. the first non-comment line of <ref file>, the pack's deploy/platform-ref (production's pin, a prod/<UTC> tag)
+#   3. master
 # Credentials (build variables): YESHUMAN_PLATFORM_SSH_KEY (read-only deploy key PEM) or YESHUMAN_PLATFORM_TOKEN.
 set -eu
 
-dest="${1:?Usage: clone-platform.sh <dest>}"
+dest="${1:?Usage: clone-platform.sh <dest> [<ref file>]}"
+ref_file="${2:-}"
 repo="${YESHUMAN_PLATFORM_REPO:-yeshuman-io/yeshuman}"
-ref="${YESHUMAN_PLATFORM_REF:-master}"
+ref="${YESHUMAN_PLATFORM_REF:-}"
+ref_from="YESHUMAN_PLATFORM_REF"
+if [ -z "${ref}" ] && [ -n "${ref_file}" ] && [ -f "${ref_file}" ]; then
+  ref="$(sed -e 's/#.*//' -e 's/[[:space:]]//g' "${ref_file}" | grep -m 1 . || true)"
+  ref_from="deploy/platform-ref"
+fi
+if [ -z "${ref}" ]; then
+  ref="master"
+  ref_from="default"
+fi
 keyfile=""
 
 if [ -n "${YESHUMAN_PLATFORM_SSH_KEY:-}" ]; then
@@ -24,7 +39,7 @@ else
   exit 1
 fi
 
-echo "==> clone ${repo}@${ref} -> ${dest}"
+echo "==> clone ${repo}@${ref} (${ref_from}) -> ${dest}"
 git clone --depth 1 --branch "${ref}" "${url}" "${dest}"
 git -C "${dest}" log -1 --format='==> platform %h %s'
 

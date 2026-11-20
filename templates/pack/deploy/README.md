@@ -10,6 +10,16 @@ Railway builds this pack's services from these files. Do not edit them in a pack
 
 Railway reads only a root `railway.toml` unless a service's **Config file path** is set, so each service needs that setting pointing at the file above. The pre-deploy is `sh /app/tenant-pack/deploy/predeploy.sh` (migrate, then `bootstrap_tenant`). It is a script because Railway runs a Dockerfile service's commands in exec form: the earlier `python manage.py migrate && python manage.py bootstrap_tenant` string only ever migrated, so no staging was seeded. `GET /api/health` → `bootstrapped` shows whether `bootstrap_tenant` has run.
 
+## Platform ref
+
+`clone-platform.sh` picks the platform ref to build, first match wins:
+
+1. `YESHUMAN_PLATFORM_REF` on the service. Every **staging** service sets it to `staging`, so staging always builds the platform's newest tested work.
+2. `deploy/platform-ref` (first non-comment line). This is **production's pin**: a `prod/<UTC>` tag that `yeshuman-ops` `scripts/promote.py platform` created. Production services leave `YESHUMAN_PLATFORM_REF` unset so this file decides.
+3. `master`, when neither is set.
+
+Moving production to a newer platform is a pack change: a PR to `staging` that edits only `deploy/platform-ref` (`promote.py --pin <handle>` opens it), then the usual promote. The pack code and the platform version reach production together, and promoting the platform moves no tenant. `deploy/platform-ref` is the pack's own file: template refreshes create it when missing and never overwrite it.
+
 ## Seeding by environment
 
 `bootstrap_tenant` reads `RAILWAY_ENVIRONMENT_NAME`. **production** never gets `seeds/demo.yaml` users (their passwords are committed). **staging** and PR environments get them, with their yaml passwords reset on each deploy. `SEED_DEPLOYMENT_USERS` is optional on Railway. Accounts that must exist in production go in `SEED_DEPLOYMENT_USERS` in the dashboard, never in `seeds/demo.yaml`. Full table: platform `docs/TENANT_REPOS.md` (Railway bootstrap).
