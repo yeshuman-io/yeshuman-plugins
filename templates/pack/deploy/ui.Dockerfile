@@ -7,18 +7,19 @@ RUN apt-get update \
 RUN corepack enable
 
 ARG YESHUMAN_PLATFORM_REPO=yeshuman-io/yeshuman
-ARG YESHUMAN_PLATFORM_REF=master
+# Empty unless the service sets it (staging: "staging"); then deploy/platform-ref decides.
+ARG YESHUMAN_PLATFORM_REF=""
 ARG YESHUMAN_PLATFORM_SSH_KEY=""
 ARG YESHUMAN_PLATFORM_TOKEN=""
 # Changes on every pack commit, so each pack build re-clones the platform ref.
 ARG RAILWAY_GIT_COMMIT_SHA=""
 
-COPY deploy/clone-platform.sh /tmp/clone-platform.sh
+COPY deploy/clone-platform.sh deploy/platform-ref* /tmp/
 RUN echo "pack ${RAILWAY_GIT_COMMIT_SHA}" \
-  && sh /tmp/clone-platform.sh /tmp/platform \
+  && sh /tmp/clone-platform.sh /tmp/platform /tmp/platform-ref \
   && mkdir -p /app \
   && if [ -d /tmp/platform/ui ]; then cp -a /tmp/platform/ui/. /app/; else cp -a /tmp/platform/labs/. /app/; fi \
-  && rm -rf /tmp/platform /tmp/clone-platform.sh
+  && rm -rf /tmp/platform /tmp/clone-platform.sh /tmp/platform-ref
 
 WORKDIR /app
 ENV TENANT_ROOT=/app/tenant-pack

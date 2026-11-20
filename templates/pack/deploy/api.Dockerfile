@@ -9,18 +9,19 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 ARG YESHUMAN_PLATFORM_REPO=yeshuman-io/yeshuman
-ARG YESHUMAN_PLATFORM_REF=master
+# Empty unless the service sets it (staging: "staging"); then deploy/platform-ref decides.
+ARG YESHUMAN_PLATFORM_REF=""
 ARG YESHUMAN_PLATFORM_SSH_KEY=""
 ARG YESHUMAN_PLATFORM_TOKEN=""
 # Changes on every pack commit, so each pack build re-clones the platform ref.
 ARG RAILWAY_GIT_COMMIT_SHA=""
 
-COPY deploy/clone-platform.sh /tmp/clone-platform.sh
+COPY deploy/clone-platform.sh deploy/platform-ref* /tmp/
 RUN echo "pack ${RAILWAY_GIT_COMMIT_SHA}" \
-  && sh /tmp/clone-platform.sh /tmp/platform \
+  && sh /tmp/clone-platform.sh /tmp/platform /tmp/platform-ref \
   && mkdir -p /app \
   && cp -a /tmp/platform/api/. /app/ \
-  && rm -rf /tmp/platform /tmp/clone-platform.sh
+  && rm -rf /tmp/platform /tmp/clone-platform.sh /tmp/platform-ref
 
 WORKDIR /app
 ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
