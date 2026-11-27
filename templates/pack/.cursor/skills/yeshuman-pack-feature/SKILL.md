@@ -57,7 +57,8 @@ A new model, app or classifier profile needs an accepted design record (`yeshuma
 
 ```ts
 export function register(app: YeshumanPluginApi) {
-  app.routes.add({ path: '/example', element: ExamplePage })
+  app.screens.add(screens)                       // plugin/ui/screens.ts: every screen, as data (.platform/docs/SCREEN_MAP.md)
+  app.screens.mount('patient.example', ExamplePage)
   app.dashboard.section('patient', 'example')   // DashboardSectionName in .platform/ui/src/plugin/types.ts
   app.chrome.card({ hideDescription: true })
   app.publicShare.route({ path: '/s/:slug', element: PublicExamplePage })
@@ -81,8 +82,8 @@ app.canvases?.register({
   id: '<handle>.skill-pool',                         // prefix with your handle
   title: 'Skill pool',
   targets: [{ page: '/platform/skills-catalog' }, { entity: 'skill-domain' }],
-  page: { path: '/platform/skill-pool' },            // optional: same view as a deep-linkable full page
-  requiresProduct: '>=2.5.0,<3',
+  page: { screen: 'platform.skill_pool' },           // optional: full page at a screen declared in plugin/ui/screens.ts
+  requiresProduct: '>=5,<6',
   render: SkillPoolCanvas,                           // gets canvasId, mode, params, entity, data, pagePath, close
   glance: SkillPoolGlance,                           // optional summary strip under the page header; gets open(), pagePath
 })
