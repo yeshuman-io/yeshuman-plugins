@@ -38,6 +38,24 @@ Optional `origin_url` in `yeshuman.yaml` (a plain `https://` URL) adds a sentenc
 
 Cloud secrets for the pack's Cursor team: `YESHUMAN_PLATFORM_TOKEN` (read access to the platform repo), `OPENAI_API_KEY`, optional `YESHUMAN_PLATFORM_REF` (default `master`) and `YESHUMAN_SEED_DEPLOYMENT_USERS`.
 
+## Pack CI
+
+Two reusable workflows run every pack's checks the same way. A pack calls them from `.github/workflows/ci.yml`, which the pack template writes (`templates/pack/.github/workflows/ci.yml`).
+
+| Workflow | When | What | Time |
+|----------|------|------|------|
+| `pack-checks.yml` | Pull requests | `contract_status.py` (the pin accepts platform `staging`), `check_pack_sdk_imports.py`, `check_terminology.py`. Each runs on the PR branch and its base and fails only on findings the PR adds. | about 1 min |
+| `pack-suite.yml` | Push to `staging`, nightly, by hand | The pack's own tests (`yeshuman test <handle> --pack`) with Postgres 18 + pgvector, twice in parallel: the candidate (this commit on platform `staging`) and the baseline (`master` on the platform tag in its `deploy/platform-ref`, which is what production runs). A failed test is rerun once. The **No new failures** job fails when the candidate fails a test the baseline did not. | about 3 to 10 min |
+
+The helpers are in `ci/` (standard library Python). Callers pin `@main`.
+
+Setup, once per organisation or repo:
+
+- Variable `CI_RUNNER`: the `runs-on` label, such as `blacksmith-4vcpu-ubuntu-2404` or `ubuntu-latest`. Until it is set, every job is skipped. Optional `CI_RUNNER_SMALL` for the fast checks (such as `blacksmith-2vcpu-ubuntu-2404`).
+- Secret `YESHUMAN_PLATFORM_TOKEN`: read access to the platform repo, the same kind of token the pack's Cloud workspace uses.
+
+Switching runner provider is a change to `CI_RUNNER`, not to any workflow.
+
 ## Cloud base image
 
 `images/cloud-base/Dockerfile` is the Cloud VM toolchain (Ubuntu 24.04, Postgres 18 + pgvector, Node 22 + pnpm 9, uv + Python 3.13). No platform or pack code. `.github/workflows/cloud-base.yml` publishes it to `ghcr.io/yeshuman-io/cloud-base` on merges to `main` that touch it, or by hand (**Actions** → **cloud-base image** → **Run workflow**).

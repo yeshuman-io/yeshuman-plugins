@@ -1,0 +1,187 @@
+name: Pack suite
+
+# A pack's full test suite against the platform, with Postgres, gated on "no new failures".
+# Called from a pack's .github/workflows/ci.yml on pushes to staging, nightly and by hand
+# (template: templates/pack/.github/workflows/ci.yml).
+#
+# Two runs in parallel, then a compare:
+#   candidate  the commit under test (the pack branch that triggered the run) on platform `platform_ref`
+#              (default staging, which is what Railway staging builds)
+#   baseline   the pack's `baseline_branch` (default master, production) on the platform ref production
+#              clones: the tag in that branch's deploy/platform-ref, or master without one
+# A candidate test that fails twice (a failed test is rerun once) and did not fail on the baseline is a
+# new failure, and the compare job fails. Known failures already on production do not block.
+
+on:
+  workflow_call:
+    inputs:
+      runner:
+        description: runs-on label, e.g. ubuntu-latest or blacksmith-4vcpu-ubuntu-2404
+        type: string
+        default: ubuntu-latest
+      platform_repo:
+        type: string
+        default: yeshuman-io/yeshuman
+      platform_ref:
+        description: Platform branch or tag for the candidate run
+        type: string
+        default: staging
+      baseline_branch:
+        description: Pack branch for the baseline run
+        type: string
+        default: master
+      plugins_ref:
+        description: Ref of yeshuman-plugins whose ci/ helpers run (keep equal to the uses @ref)
+        type: string
+        default: main
+    secrets:
+      platform_token:
+        description: Read access to the platform repo
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  suite:
+    name: Suite (${{ matrix.side }})
+    runs-on: ${{ inputs.runner }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        side: [candidate, baseline]
+    services:
+      postgres:
+        image: pgvector/pgvector:pg18
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      PGPASSWORD: postgres
+      # configure --no-prompt needs a deployment user; tests never log in with it.
+      YESHUMAN_SEED_DEPLOYMENT_USERS: ci@example.com:ci-only-not-a-secret:developer
+      OPENAI_API_KEY: ""
+    steps:
+      - name: Check out the pack
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.side == 'baseline' && inputs.baseline_branch || '' }}
+      - name: Check out CI helpers
+        uses: actions/checkout@v4
+        with:
+          repository: yeshuman-io/yeshuman-plugins
+          ref: ${{ inputs.plugins_ref }}
+          path: .ci-helpers
+          sparse-checkout: ci
+      - name: Pick the platform ref
+        id: ref
+        run: |
+          if [ "${{ matrix.side }}" = candidate ]; then
+            ref="${{ inputs.platform_ref }}"
+          else
+            ref="$(grep -v '^[[:space:]]*#' deploy/platform-ref 2>/dev/null | tr -d '[:space:]' || true)"
+            ref="${ref:-master}"
+          fi
+          handle="$(sed -n 's/^handle:[[:space:]]*//p' yeshuman.yaml | head -1 | tr -d "\"' ")"
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+          echo "handle=$handle" >> "$GITHUB_OUTPUT"
+          echo "Pack $handle at $(git rev-parse --short HEAD), platform $ref" | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Clone the platform
+        env:
+          TOKEN: ${{ secrets.platform_token }}
+          REPO: ${{ inputs.platform_repo }}
+          REF: ${{ steps.ref.outputs.ref }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::error::Secret YESHUMAN_PLATFORM_TOKEN is not set for this repo (read access to $REPO)."
+            exit 1
+          fi
+          git clone -q --depth 1 --branch "$REF" "https://x-access-token:${TOKEN}@github.com/${REPO}.git" .platform
+          echo "Platform $REF at $(git -C .platform rev-parse --short HEAD)" | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            .platform/api/uv.lock
+            .platform/cli/uv.lock
+      - name: Install the platform API for this pack
+        env:
+          HANDLE: ${{ steps.ref.outputs.handle }}
+        run: |
+          mkdir -p .platform/.packs
+          ln -sfn "$GITHUB_WORKSPACE" ".platform/.packs/$HANDLE"
+          printf '%s\n' POSTGRES_ADMIN_USER=postgres POSTGRES_ADMIN_PASSWORD=postgres \
+            POSTGRES_HOST=localhost POSTGRES_PORT=5432 POSTGRES_MIN_VERSION=18.4 > .platform/api/.env.bootstrap
+          # Test databases are created from template1, so pgvector must be there first.
+          psql -h localhost -U postgres -d template1 -c 'CREATE EXTENSION IF NOT EXISTS vector;'
+          (cd .platform/api && uv sync --frozen -q)
+          cd .platform/cli
+          uv sync --frozen -q
+          uv run yeshuman configure "$HANDLE" --no-prompt --allow-placeholder-openai
+      - name: Run the pack's tests
+        id: tests
+        env:
+          HANDLE: ${{ steps.ref.outputs.handle }}
+        working-directory: .platform/cli
+        run: |
+          set +e
+          uv run yeshuman test "$HANDLE" --pack -- -q -rfE --junitxml="$RUNNER_TEMP/first.xml"
+          code=$?
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          # pytest: 0 all passed, 1 some failed. Anything else (2-5) means the run itself broke.
+          if [ "$code" = 1 ]; then
+            echo "::group::Rerun the failures once"
+            uv run yeshuman test "$HANDLE" --pack -- -q -rfE --lf --lfnf=none --junitxml="$RUNNER_TEMP/rerun.xml"
+            echo "::endgroup::"
+          elif [ "$code" != 0 ]; then
+            echo "::error::pytest exited $code: the ${{ matrix.side }} suite did not run cleanly."
+            exit "$code"
+          fi
+          exit 0
+      - name: Collect failures
+        run: |
+          python3 .ci-helpers/ci/pytest_failures.py collect "$RUNNER_TEMP/${{ matrix.side }}.json" \
+            "$RUNNER_TEMP/first.xml" "$RUNNER_TEMP/rerun.xml" | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pack-suite-${{ matrix.side }}
+          path: ${{ runner.temp }}/${{ matrix.side }}.json
+          retention-days: 14
+
+  compare:
+    name: No new failures
+    needs: suite
+    if: ${{ !cancelled() }}
+    runs-on: ${{ inputs.runner }}
+    timeout-minutes: 5
+    steps:
+      - name: Check out CI helpers
+        uses: actions/checkout@v4
+        with:
+          repository: yeshuman-io/yeshuman-plugins
+          ref: ${{ inputs.plugins_ref }}
+          path: .ci-helpers
+          sparse-checkout: ci
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: pack-suite-*
+          merge-multiple: true
+          path: results
+      - name: Compare candidate with baseline
+        run: |
+          if [ ! -f results/candidate.json ]; then
+            echo "::error::The candidate suite did not finish; see its job log."
+            exit 1
+          fi
+          if [ ! -f results/baseline.json ]; then
+            echo "::error::The baseline suite did not finish, so new failures cannot be told apart; see its job log."
+            exit 1
+          fi
+          python3 .ci-helpers/ci/pytest_failures.py compare results/baseline.json results/candidate.json | tee -a "$GITHUB_STEP_SUMMARY"
+          exit "${PIPESTATUS[0]}"

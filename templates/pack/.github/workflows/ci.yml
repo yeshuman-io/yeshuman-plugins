@@ -1,0 +1,42 @@
+# Managed by Yes Human (yeshuman-plugins templates/pack). Do not edit in the pack; change the template.
+name: CI
+
+# Runs only once the CI_RUNNER variable is set (repo or organisation variable), e.g.
+# blacksmith-4vcpu-ubuntu-2404 or ubuntu-latest. Unset, every job is skipped and nothing is billed.
+# Needs the YESHUMAN_PLATFORM_TOKEN secret (read access to the platform repo).
+#
+#   pull_request        fast checks (about a minute): pins, SDK imports, terminology; new findings only
+#   push to staging     full suite with Postgres, no new failures versus production (the promotion gate)
+#   nightly, by hand    full suite again, catching platform staging changes that break this pack
+
+on:
+  pull_request:
+  push:
+    branches: [staging]
+  schedule:
+    - cron: "17 13 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    if: vars.CI_RUNNER != '' && github.event_name == 'pull_request'
+    uses: yeshuman-io/yeshuman-plugins/.github/workflows/pack-checks.yml@main
+    with:
+      runner: ${{ vars.CI_RUNNER_SMALL || vars.CI_RUNNER }}
+    secrets:
+      platform_token: ${{ secrets.YESHUMAN_PLATFORM_TOKEN }}
+
+  suite:
+    if: vars.CI_RUNNER != '' && github.event_name != 'pull_request'
+    uses: yeshuman-io/yeshuman-plugins/.github/workflows/pack-suite.yml@main
+    with:
+      runner: ${{ vars.CI_RUNNER }}
+    secrets:
+      platform_token: ${{ secrets.YESHUMAN_PLATFORM_TOKEN }}
