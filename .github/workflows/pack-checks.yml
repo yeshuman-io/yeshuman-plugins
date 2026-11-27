@@ -1,0 +1,93 @@
+name: Pack checks
+
+# Fast pack checks for pull requests, called from a pack's .github/workflows/ci.yml
+# (template: templates/pack/.github/workflows/ci.yml). About a minute; no Postgres, no installs.
+#
+# Each check runs on the PR branch and on its base and fails only on findings the PR adds,
+# so a pack with known findings today is not blocked by them:
+#   pins         contract_status.py: the pack's requires_product pin accepts the platform ref
+#   sdk-imports  check_pack_sdk_imports.py: pack code imports the platform only through the SDK
+#   terminology  check_terminology.py: no new job / jd / spec identifiers (pack allowlist)
+
+on:
+  workflow_call:
+    inputs:
+      runner:
+        description: runs-on label, e.g. ubuntu-latest or blacksmith-2vcpu-ubuntu-2404
+        type: string
+        default: ubuntu-latest
+      platform_repo:
+        type: string
+        default: yeshuman-io/yeshuman
+      platform_ref:
+        description: Platform branch or tag the checks read
+        type: string
+        default: staging
+      plugins_ref:
+        description: Ref of yeshuman-plugins whose ci/ helpers run (keep equal to the uses @ref)
+        type: string
+        default: main
+    secrets:
+      platform_token:
+        description: Read access to the platform repo
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: Pack checks
+    runs-on: ${{ inputs.runner }}
+    timeout-minutes: 10
+    steps:
+      - name: Check out the pack (PR branch)
+        uses: actions/checkout@v4
+        with:
+          path: pack
+      - name: Check out the pack (base branch)
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.base_ref }}
+          path: base
+      - name: Check out CI helpers
+        uses: actions/checkout@v4
+        with:
+          repository: yeshuman-io/yeshuman-plugins
+          ref: ${{ inputs.plugins_ref }}
+          path: helpers
+          sparse-checkout: ci
+      - name: Clone the platform (${{ inputs.platform_ref }})
+        env:
+          TOKEN: ${{ secrets.platform_token }}
+          REPO: ${{ inputs.platform_repo }}
+          REF: ${{ inputs.platform_ref }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::error::Secret YESHUMAN_PLATFORM_TOKEN is not set for this repo (read access to $REPO)."
+            exit 1
+          fi
+          git clone -q --depth 1 --branch "$REF" "https://x-access-token:${TOKEN}@github.com/${REPO}.git" platform
+          echo "Platform $REF at $(git -C platform rev-parse --short HEAD)"
+
+      - name: pins
+        if: ${{ !cancelled() }}
+        run: |
+          set +e
+          python3 platform/scripts/pack_workspace/contract_status.py --pack pack
+          code=$?
+          # 0 current, 3 behind or mismatched (allowed), 1 missing or incompatible.
+          if [ "$code" = 1 ]; then
+            echo "::error::The pack's requires_product pin does not accept platform ${{ inputs.platform_ref }}."
+            exit 1
+          fi
+          exit 0
+
+      - name: sdk-imports
+        if: ${{ !cancelled() }}
+        run: python3 helpers/ci/run_diff_check.py sdk-imports platform pack base
+
+      - name: terminology
+        if: ${{ !cancelled() }}
+        run: python3 helpers/ci/run_diff_check.py terminology platform pack base

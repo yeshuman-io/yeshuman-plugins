@@ -44,6 +44,8 @@ cp "${TPL}/CLAUDE.md" "${PACK}/CLAUDE.md"
 mkdir -p "${PACK}/.github/ISSUE_TEMPLATE"
 cp "${TPL}/.github/ISSUE_TEMPLATE/"* "${PACK}/.github/ISSUE_TEMPLATE/"
 cp "${TPL}/.github/pull_request_template.md" "${PACK}/.github/pull_request_template.md"
+mkdir -p "${PACK}/.github/workflows"
+cp "${TPL}/.github/workflows/ci.yml" "${PACK}/.github/workflows/ci.yml"
 mkdir -p "${PACK}/deploy"
 find "${TPL}/deploy" -maxdepth 1 -type f -exec cp {} "${PACK}/deploy/" \;
 # The production platform pin is the pack's own (moved by yeshuman-ops scripts/pin_platform.py): create it, never overwrite it.
