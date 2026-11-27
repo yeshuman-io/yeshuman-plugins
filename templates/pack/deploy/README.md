@@ -4,7 +4,7 @@ Railway builds this pack's services from these files. Do not edit them in a pack
 
 | Service | Railway config file path | Builds |
 |---------|--------------------------|--------|
-| `<handle>-api` | `deploy/api.railway.toml` | `deploy/api.Dockerfile`; pre-deploy `migrate` then `bootstrap_tenant` |
+| `<handle>-api` | `deploy/api.railway.toml` | `deploy/api.Dockerfile` (a Node stage first writes `config/screen-map.json` from platform and pack screens; the pack does not commit it); pre-deploy `migrate` then `bootstrap_tenant` |
 | `<handle>-ui` | `deploy/ui.railway.toml` | `deploy/ui.Dockerfile` |
 | `<handle>-jobs` (packs with a `jobs/` board) | `jobs/railway.toml` | `jobs/Dockerfile` |
 
