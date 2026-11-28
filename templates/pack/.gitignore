@@ -1,2 +1,4 @@
 .platform/
 __pycache__/
+# Generated at build time from platform + pack screens (platform docs/SCREEN_MAP.md)
+config/screen-map.json
